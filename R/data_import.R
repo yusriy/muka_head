@@ -93,5 +93,10 @@ colnames(df)[which(colnames(df) == 'X.z.d..L')] <- 'Z.L'
 # Delete temporary variables
 rm(time_stamp,df_biomet)
 
+# Obtain the indices to filter out the data for 180 < wind_dir < 270 
+# to exclude data from land.
+wind_check <- which(df$wind_dir <= 90 | df$wind_dir >= 270) # index
+wind_check1 <- which(df$wind_dir >= 90 | df$wind_dir <= 270) # index for opposite
+
 # Export data
 write.table(df,'data/df.csv',sep=',')
