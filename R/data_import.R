@@ -92,3 +92,6 @@ colnames(df)[which(colnames(df) == 'X.z.d..L')] <- 'Z.L'
 
 # Delete temporary variables
 rm(time_stamp,df_biomet)
+
+# Export data
+write.table(df,'data/df.csv',sep=',')
