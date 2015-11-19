@@ -19,9 +19,9 @@ source('R/tools/charactersNumeric.R')
 
 #### 2. Importing and processing the data #####################
 # Import individual processed data files
-df <- read.csv('data/eddypro_20151112_full_output_2015-11-12T200521_exp.csv',
+df <- read.csv('data/eddypro_20151119_full_output_2015-11-19T150801_exp.csv',
                skip=1)
-df_biomet <- read.csv('data/eddypro_20151112_biomet_2015-11-12T200521_exp.csv')
+df_biomet <- read.csv('data/eddypro_20151119_biomet_2015-11-19T150801_exp.csv')
 
 # Delete unnecessary columns and rows in EC data files
 df <- df[,-1] # Remove 1st column
@@ -99,4 +99,4 @@ wind_check <- which(df$wind_dir <= 90 | df$wind_dir >= 270) # index
 wind_check1 <- which(df$wind_dir >= 90 | df$wind_dir <= 270) # index for opposite
 
 # Export data
-write.table(df,'data/df.csv',sep=',')
+write.table(df,'data/df1.csv',sep=',')
