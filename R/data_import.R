@@ -95,8 +95,9 @@ rm(time_stamp,df_biomet)
 
 # Obtain the indices to filter out the data for 180 < wind_dir < 270 
 # to exclude data from land.
-wind_check <- which(df$wind_dir <= 90 | df$wind_dir >= 270) # index
-wind_check1 <- which(df$wind_dir >= 90 | df$wind_dir <= 270) # index for opposite
+wind_check <- df$wind_dir <= 90 | df$wind_dir >= 270 # index to use flux data
+df <- cbind(df,wind_check)
+rm(wind_check)
 
 # Export data
 write.table(df,'data/df1.csv',sep=',')
