@@ -11,6 +11,9 @@
 # Author: Yusri Yusup, PhD
 # Date: 2015-11-12
 # 
+# Note: 
+# 1. For data before 2015-12-02 10:30:00, all RN_1_1_1 should be
+# divided by 13.6, corrections were made for data after this date.
 ###############################################################
 
 #### 1. Preliminaries #########################################
@@ -86,6 +89,15 @@ df <- charactersNumeric(df)
 df$TA_1_1_1 <- df$TA_1_1_1 - 273.15
 df$TS_1_1_1 <- df$TS_1_1_1 - 273.15
 df$TS_2_1_1 <- df$TS_2_1_1 - 273.15
+
+# Remove all improbable values of T
+df$TA_1_1_1[which(df$TA_1_1_1 < 0 )] <- NA
+df$TS_1_1_1[which(df$TS_1_1_1 < 0 )] <- NA
+df$TS_2_1_1[which(df$TS_2_1_1 < 0 )] <- NA
+
+# Convert RN_1_1_1 to accurate values by dividing by the sensor sensitivity
+# value of 13.6 uV/W m-2 but only for data before 2015-12-02 10:30:00
+df$RN_1_1_1 <- df$RN_1_1_1 / 13.6
 
 # Change column name of (z-d)/L to Z.L
 colnames(df)[which(colnames(df) == 'X.z.d..L')] <- 'Z.L'
