@@ -17,14 +17,13 @@
 ###############################################################
 
 #### 1. Preliminaries #########################################
-source('R/tools/convert_magic.R')
-source('R/tools/charactersNumeric.R')
+source('R/tools/tool_convert_magic.R')
+source('R/tools/tool_charactersNumeric.R')
 
 #### 2. Importing and processing the data #####################
 # Import individual processed data files
-df <- read.csv('data/eddypro_20151119_full_output_2015-11-19T150801_exp.csv',
-               skip=1)
-df_biomet <- read.csv('data/eddypro_20151119_biomet_2015-11-19T150801_exp.csv')
+df <- read.csv(file.choose(),skip=1)
+df_biomet <- read.csv(file.choose())
 
 # Delete unnecessary columns and rows in EC data files
 df <- df[,-1] # Remove 1st column
@@ -110,6 +109,63 @@ rm(time_stamp,df_biomet)
 wind_check <- df$wind_dir <= 90 | df$wind_dir >= 270 # index to use flux data
 df <- cbind(df,wind_check)
 rm(wind_check)
+
+# Classifying into number of days
+start <- as.numeric(df$time_stamp[1])
+difference <- 86400 # 24 * 60 * 60 seconds
+
+index = 1 # The number the days
+day = numeric(length=nrow(df)) # Initialize day variable
+
+for (i in 1:nrow(df)){
+  # A failsafe if time_stamp is NA
+  if(is.na(as.numeric(df$time_stamp[i]))){
+    # Assigned the NA value as the day before
+    day[i] <- index
+  } else {
+    if(as.numeric(df$time_stamp[i]) >= start & 
+       as.numeric(df$time_stamp[i]) < (difference + start)){
+      day[i] <- index
+    } else {
+      day[i] <- index
+      index <- index + 1
+      start <- difference + start
+    }
+  }
+}
+rm(start,difference,index)
+df <- cbind(df,day)
+
+#### Filter TS_1_1_1 values ####
+# Create temporary TS_1_1_1 value
+ts <- df$TS_1_1_1
+# Standard dev of TS_1_1_1
+ts_sd <- numeric(nrow(df))
+# Mean of TS_1_1_1
+ts_mean <- numeric(nrow(df))
+# Level of standard deviation
+level <- 1
+## Calculate standard deviation of T
+# To count number of days
+j <- 1
+for (i in 1:nrow(df)){
+  if(df$day[i] == j){
+    ts_sd[i] <- sd(df$TS_1_1_1[which(df$day==j)], na.rm = TRUE)
+    ts_mean[i] <- mean(df$TS_1_1_1[which(df$day==j)], na.rm = TRUE)
+    temp_sd <- ts_sd[i]
+    temp_mean <- ts_mean[i]
+    j <- j + 1
+  } else {
+    ts_sd[i] <- temp_sd
+    ts_mean[i] <- temp_mean
+  }
+}
+# Remove all above water temperature readings by 1 level std. dev.
+df$TS_1_1_1[which(ts < ts_mean - (level * ts_sd))] <- NA 
+rm(i,j,level,temp_mean,temp_sd,ts,ts_mean,ts_sd)
+
+
+
 
 # Export data
 write.table(df,'data/df1.csv',sep=',')
