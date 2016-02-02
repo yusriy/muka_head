@@ -19,6 +19,8 @@
 #### 1. Preliminaries #########################################
 source('R/tools/tool_convert_magic.R')
 source('R/tools/tool_charactersNumeric.R')
+source('R/tools/trapezium_intg_3.R')
+source('R/tools/trapezium_intg_2.R')
 
 #### 2. Importing and processing the data #####################
 # Import individual processed data files
@@ -31,10 +33,12 @@ df <- df[-1,] # Remove 1st row
 
 # Delete unnecessary columns and rows in Biomet data files
 df_biomet <- df_biomet[-1,] # Remove the 1st row
-df_biomet <- df_biomet[,-c(1,2,3)] # Remove the first 3 columns to combine with df
+df_biomet <- df_biomet[,-c(3)] # Remove the first 3 columns to combine with df
 
+# Merge the df and df_biomet
+df <- merge(df,df_biomet,by=c('date','time'),all=TRUE)
 # Combine df_biomet with df
-df <- cbind(df,df_biomet)
+#df <- cbind(df,df_biomet)
 
 # Using convert_magic to convert all columns to 'character' first
 df <- convert_magic(df[,c(seq(1,ncol(df)))],c(rep('character',times = ncol(df))))
@@ -110,7 +114,7 @@ wind_check <- df$wind_dir <= 90 | df$wind_dir >= 270 # index to use flux data
 df <- cbind(df,wind_check)
 rm(wind_check)
 
-# Classifying into number of days
+#### Classifying into number of days ####
 start <- as.numeric(df$time_stamp[1])
 difference <- 86400 # 24 * 60 * 60 seconds
 
@@ -133,8 +137,9 @@ for (i in 1:nrow(df)){
     }
   }
 }
-rm(start,difference,index)
+
 df <- cbind(df,day)
+rm(start,difference,index,day)
 
 #### Filter TS_1_1_1 values ####
 # Create temporary TS_1_1_1 value
@@ -144,7 +149,7 @@ ts_sd <- numeric(nrow(df))
 # Mean of TS_1_1_1
 ts_mean <- numeric(nrow(df))
 # Level of standard deviation
-level <- 1
+level <- 0.7
 ## Calculate standard deviation of T
 # To count number of days
 j <- 1
@@ -164,6 +169,51 @@ for (i in 1:nrow(df)){
 df$TS_1_1_1[which(ts < ts_mean - (level * ts_sd))] <- NA 
 rm(i,j,level,temp_mean,temp_sd,ts,ts_mean,ts_sd)
 
+#### Calculate energy storage in water ####
+# Only 3 heights including the water surface temperature
+# These are estimated heights
+# Level 1: water surface = 0.0001 m 
+# Level 2: 2 m 
+# Level 3: 5 m
+heights <- c(2,5) 
+# Calculating rho * cp for each level
+rho <- 1025 # Density of sea water = 1020 to 1029 kg m-3
+c_p <- 3850 # Specific heat capacity of sea water = 3850 J kg-1 C-1
+rho_cp <- rho * c_p
+rm(rho,c_p)
+
+# Note: Remove water surface temperature contribution to storage
+# due to uncertainty in the accuracy of the measurements
+# Calculating the difference of rho * c_p * (T2 - T1) in time
+# Level 1, 0.0001 m, water surface temperature
+#rho_cp_dT1 <- numeric()
+#for (i in 1:nrow(df)){
+#  rho_cp_dT1[i] <- ((rho_cp*df$TW_1_1_1[i]) - 
+#                      (rho_cp*df$TW_1_1_1[i-1]))/(30 * 60)
+#}
+
+# Level 2, 2 m
+rho_cp_dT2 <- numeric()
+for (i in 1:nrow(df)){
+  rho_cp_dT2[i] <- ((rho_cp*df$TS_1_1_1[i]) - 
+                      (rho_cp*df$TS_1_1_1[i-1]))/(30 * 60)
+}
+
+# Level 3, 5 m
+rho_cp_dT3 <- numeric()
+for (i in 1:nrow(df)){
+  rho_cp_dT3[i] <- ((rho_cp*df$TS_2_1_1[i]) - 
+                      (rho_cp*df$TS_2_1_1[i-1]))/(30 * 60)
+}
+
+# Integrating using the trapezium area rule
+H_stor <- numeric()
+for (i in 1:nrow(df)){
+  H_stor[i] <- trapezium_intg_2(heights,rho_cp_dT2[i],rho_cp_dT3[i])
+}
+# Adding to df_EC
+df <- cbind(df,H_stor)
+rm(heights,i,rho_cp,rho_cp_dT1,rho_cp_dT2,rho_cp_dT3,H_stor)
 
 
 
