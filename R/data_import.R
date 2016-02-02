@@ -1,5 +1,4 @@
-###############################################################
-# Script: Data import
+#### Script: Muka Head EC Data import ##########################
 # Purpose: To import data from Muka Head EC station
 # 
 # TITLE: Air-sea interaction of a semi-enclosed tropical ocean:
@@ -14,7 +13,6 @@
 # Note: 
 # 1. For data before 2015-12-02 10:30:00, all RN_1_1_1 should be
 # divided by 13.6, corrections were made for data after this date.
-###############################################################
 
 #### 1. Preliminaries #########################################
 source('R/tools/tool_convert_magic.R')
@@ -227,7 +225,7 @@ hstor_sd <- numeric(nrow(df))
 hstor_mean <- numeric(nrow(df))
 
 # Level of standard deviation
-level <- 0.7 # From analyzing preliminary results found this is the best level to
+level <- 1 # From analyzing preliminary results found this is the best level to
 # use to maintain most of the data while removing the spikes.
 
 ## Calculate standard deviation of H_stor
