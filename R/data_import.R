@@ -149,7 +149,8 @@ ts_sd <- numeric(nrow(df))
 # Mean of TS_1_1_1
 ts_mean <- numeric(nrow(df))
 # Level of standard deviation
-level <- 0.7
+level <- 0.7 # From analyzing preliminary results found this is the best level to
+# use to maintain most of the data while removing the spikes.
 ## Calculate standard deviation of T
 # To count number of days
 j <- 1
@@ -165,7 +166,7 @@ for (i in 1:nrow(df)){
     ts_mean[i] <- temp_mean
   }
 }
-# Remove all above water temperature readings by 1 level std. dev.
+# Remove all above water temperature readings by X level std. dev.
 df$TS_1_1_1[which(ts < ts_mean - (level * ts_sd))] <- NA 
 rm(i,j,level,temp_mean,temp_sd,ts,ts_mean,ts_sd)
 
@@ -211,11 +212,46 @@ H_stor <- numeric()
 for (i in 1:nrow(df)){
   H_stor[i] <- trapezium_intg_2(heights,rho_cp_dT2[i],rho_cp_dT3[i])
 }
+
 # Adding to df_EC
 df <- cbind(df,H_stor)
-rm(heights,i,rho_cp,rho_cp_dT1,rho_cp_dT2,rho_cp_dT3,H_stor)
+rm(heights,i,rho_cp,rho_cp_dT2,rho_cp_dT3,H_stor)
+
+#### Filter H_stor values ####
+
+# Create temporary H_stor value
+H_stor1 <- df$H_stor
+# Standard dev of H_stor
+hstor_sd <- numeric(nrow(df))
+# Mean of H_stor
+hstor_mean <- numeric(nrow(df))
+
+# Level of standard deviation
+level <- 0.7 # From analyzing preliminary results found this is the best level to
+# use to maintain most of the data while removing the spikes.
+
+## Calculate standard deviation of H_stor
+# To count number of days
+j <- 1
+for (i in 1:nrow(df)){
+  if(df$day[i] == j){
+    hstor_sd[i] <- sd(df$H_stor[which(df$day==j)], na.rm = TRUE)
+    hstor_mean[i] <- mean(df$H_stor[which(df$day==j)], na.rm = TRUE)
+    hstor1_sd <- hstor_sd[i]
+    hstor1_mean <- hstor_mean[i]
+    j <- j + 1
+  } else {
+    hstor_sd[i] <- hstor1_sd
+    hstor_mean[i] <- hstor1_mean
+  }
+}
+# Remove all above water temperature readings by X level std. dev.
+H_stor1[which(H_stor1 < hstor_mean - (level * hstor_sd) | 
+                H_stor1 > hstor_mean + (level * hstor_sd))] <- NA
+df <- cbind(df,H_stor1)
+rm(i,j,level,hstor_mean,hstor_sd,H_stor1,hstor1_mean,hstor1_sd)
 
 
 
 # Export data
-write.table(df,'data/df1.csv',sep=',')
+#write.table(df,'data/df1.csv',sep=',')
