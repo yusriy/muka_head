@@ -147,8 +147,8 @@ ts_sd <- numeric(nrow(df))
 # Mean of TS_1_1_1
 ts_mean <- numeric(nrow(df))
 # Level of standard deviation
-level <- 0.7 # From analyzing preliminary results found this is the best level to
-# use to maintain most of the data while removing the spikes.
+level <- 0.5  # Just a very low bandwith filter to ensure that outside water
+              # is removed
 ## Calculate standard deviation of T
 # To count number of days
 j <- 1
@@ -168,13 +168,17 @@ for (i in 1:nrow(df)){
 df$TS_1_1_1[which(ts < ts_mean - (level * ts_sd))] <- NA 
 rm(i,j,level,temp_mean,temp_sd,ts,ts_mean,ts_sd)
 
+#### Filter RH_1_1_1 ambient RH ####
+# Improbable values of RH
+df$RH_1_1_1[which(df$RH_1_1_1 > 100 | df$RH_1_1_1 < 0)] <- NA
+
 #### Calculate energy storage in water ####
 # Only 3 heights including the water surface temperature
 # These are estimated heights
 # Level 1: water surface = 0.0001 m 
 # Level 2: 2 m 
 # Level 3: 5 m
-heights <- c(2,5) 
+heights <- c(1,3) 
 # Calculating rho * cp for each level
 rho <- 1025 # Density of sea water = 1020 to 1029 kg m-3
 c_p <- 3850 # Specific heat capacity of sea water = 3850 J kg-1 C-1
@@ -218,15 +222,14 @@ rm(heights,i,rho_cp,rho_cp_dT2,rho_cp_dT3,H_stor)
 #### Filter H_stor values ####
 
 # Create temporary H_stor value
-H_stor1 <- df$H_stor
+H_stor_filter <- df$H_stor
 # Standard dev of H_stor
 hstor_sd <- numeric(nrow(df))
 # Mean of H_stor
 hstor_mean <- numeric(nrow(df))
 
 # Level of standard deviation
-level <- 1 # From analyzing preliminary results found this is the best level to
-# use to maintain most of the data while removing the spikes.
+level <- 2 # A large bandwidth to ensure most of the data is not removed
 
 ## Calculate standard deviation of H_stor
 # To count number of days
@@ -244,10 +247,10 @@ for (i in 1:nrow(df)){
   }
 }
 # Remove all above water temperature readings by X level std. dev.
-H_stor1[which(H_stor1 < hstor_mean - (level * hstor_sd) | 
-                H_stor1 > hstor_mean + (level * hstor_sd))] <- NA
-df <- cbind(df,H_stor1)
-rm(i,j,level,hstor_mean,hstor_sd,H_stor1,hstor1_mean,hstor1_sd)
+H_stor_filter[which(H_stor_filter < hstor_mean - (level * hstor_sd) | 
+                      H_stor_filter > hstor_mean + (level * hstor_sd))] <- NA
+df <- cbind(df,H_stor_filter)
+rm(i,j,level,hstor_mean,hstor_sd,H_stor_filter,hstor1_mean,hstor1_sd)
 
 
 
