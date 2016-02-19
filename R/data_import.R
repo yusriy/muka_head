@@ -98,7 +98,8 @@ df$TS_2_1_1[which(df$TS_2_1_1 < 0 )] <- NA
 
 # Convert RN_1_1_1 to accurate values by dividing by the sensor sensitivity
 # value of 13.6 uV/W m-2 but only for data before 2015-12-02 10:30:00
-df$RN_1_1_1 <- df$RN_1_1_1 / 13.6
+df$RN_1_1_1[which(df$time_stamp < "2015-12-02 10:30:00")] <- 
+  df$RN_1_1_1[which(df$time_stamp < "2015-12-02 10:30:00")] / 13.6
 
 # Change column name of (z-d)/L to Z.L
 colnames(df)[which(colnames(df) == 'X.z.d..L')] <- 'Z.L'
@@ -252,7 +253,12 @@ H_stor_filter[which(H_stor_filter < hstor_mean - (level * hstor_sd) |
 df <- cbind(df,H_stor_filter)
 rm(i,j,level,hstor_mean,hstor_sd,H_stor_filter,hstor1_mean,hstor1_sd)
 
-
+#### Remove EC data if wind_check fails (= 0) ####
+# Note temporary removal
+#df$H[which(df$wind_check == 0)] <- NA
+#df$LE[which(df$wind_check == 0)] <- NA
+#df$co2_flux[which(df$wind_check == 0)] <- NA
+#df$Z.L[which(df$wind_check == 0)] <- NA
 
 # Export data
 #write.table(df,'data/df1.csv',sep=',')

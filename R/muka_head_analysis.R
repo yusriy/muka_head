@@ -15,7 +15,7 @@ library(dplyr)
 
 
 # Saving old plotting parameters
-old.par <- par()
+#old.par <- par()
 
 #### 2. Analysis and plots ####
 
@@ -109,9 +109,14 @@ rm(df_grp_sd,df_grp_mean)
 
 
 ### Diurnal plots ###
+# Diurnal H
+plot(df_grp$hour,df_grp$H,lwd=2,type='l')
+# Diurnal LE
+plot(df_grp$hour,df_grp$LE,lwd=2,type='l')
+# Diurnal CO2
+plot(df_grp$hour,df_grp$co2_flux,lwd=2,type='l')
 # Diurnal atmospheric stability
-#plot(df_grp$hour,df_grp$zL,lwd=2,type='l')
-
+plot(df_grp$hour,df_grp$zL,lwd=2,type='l')
 # Diurnal wind speed
 plot(df_grp$hour,df_grp$WS,lwd=2,type='l')
 # Diurnal wind direction
