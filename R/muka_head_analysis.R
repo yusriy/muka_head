@@ -38,7 +38,8 @@ windRose(df,ws='wind_speed',wd='wind_dir',paddle=FALSE)
 
 #### Temperature and relative humidity ####
 # Plot temperature, T [deg C]
-plot(df$time_stamp,df$TA_1_1_1,type='l',xlab='Date',ylab='T',lwd=2)
+plot(df$time_stamp,df$TA_1_1_1,type='l',xlab='Date',ylab='T',lwd=2,
+     main='T is black; RH is red')
 # Plot a new plot on top of the previous plot
 par(new=T)
 # Plot relative humidity, RH [%]
@@ -49,14 +50,15 @@ mtext(side = 4, line = 3, 'RH')
 
 # Water surface temperature and below water surface temperatures
 # Plot water surface temperature, TW [deg C]
-plot(df$time_stamp,df$TW_1_1_1,type='l',xlab='Date',ylab='TS1',lwd=2)
+plot(df$time_stamp,df$TW_1_1_1,type='l',xlab='Date',ylab='TS1',lwd=2,
+     main='Infrared Water Sensor (black)')
 
 # Plot water surface temperature TS1 [deg C]
 lines(df$time_stamp,df$TS_2_1_1,col='red')
 
 #### Some water temperature and water heat storage ####
 
-plot(df$time_stamp,df$TS_1_1_1,type='l',lwd=2,xlab='Date',ylab='Temperature')
+plot(df$time_stamp,df$TS_1_1_1,type='l',lwd=2,xlab='Date',ylab='Water temperature')
 lines(df$time_stamp,df$TS_2_1_1,lwd=2,col='red')
 #lines(df$time_stamp,df$TW_1_1_1,lwd=2,xlab = 'Date',ylab='Temperature',type='l')
 
@@ -110,30 +112,95 @@ rm(df_grp_sd,df_grp_mean)
 
 ### Diurnal plots ###
 # Diurnal H
-plot(df_grp$hour,df_grp$H,lwd=2,type='l')
+plot(df_grp$hour,df_grp$H,lwd=2,type='l',ylab='H',xlab='Date')
 # Diurnal LE
-plot(df_grp$hour,df_grp$LE,lwd=2,type='l')
+plot(df_grp$hour,df_grp$LE,lwd=2,type='l',,ylab='LE',xlab='Date')
 # Diurnal CO2
-plot(df_grp$hour,df_grp$co2_flux,lwd=2,type='l')
+plot(df_grp$hour,df_grp$co2_flux,lwd=2,type='l',ylab='CO2 flux',xlab='Date')
 # Diurnal atmospheric stability
-plot(df_grp$hour,df_grp$zL,lwd=2,type='l')
+plot(df_grp$hour,df_grp$zL,lwd=2,type='l',ylab='z/L',xlab='Date')
 # Diurnal wind speed
-plot(df_grp$hour,df_grp$WS,lwd=2,type='l')
+plot(df_grp$hour,df_grp$WS,lwd=2,type='l',ylab='WS',xlab='Date')
 # Diurnal wind direction
-plot(df_grp$hour,df_grp$WD,lwd=2,type='l')
+plot(df_grp$hour,df_grp$WD,lwd=2,type='l',ylab='WD',xlab='Date')
 # Diurnal heat storage
-plot(df_grp$hour,df_grp$H_stor,lwd=2,type='l')
+plot(df_grp$hour,df_grp$H_stor,lwd=2,type='l',ylab='H storage',xlab='Date')
 # Diurnal heat storage (filtered)
-plot(df_grp$hour,df_grp$H_stor_filter,lwd=2,type='l')
+plot(df_grp$hour,df_grp$H_stor_filter,lwd=2,type='l',ylab='Filtered H storage',
+     xlab='Date')
+
+#### Diurnal plot of global and net radiation ####
+## from Nov 2015 to Mar 2016 (5 months)
+library(Hmisc)
+# Comparison between diurnal RG and RN
 # Diurnal global radiation
-plot(df_grp$hour,df_grp$RG,lwd=2,type='l')
+png('figs/rg_rn.png', res = 360, width = 8, height = 8, units = 'cm')
+par(mai = c(0.6,0.6,0.1,0.1))
+plot(df_grp$hour,df_grp$RG,lwd=2,type='l',ylab='',col='red',
+     xlab='', xaxt = 'n', ylim = c(-50,850))
+#minor.tick()
+axis(side = 1, at = c(0, 3, 6, 9, 12, 15, 18, 21, 24), 
+     labels = c('00:00', '03:00', '06:00', '09:00',
+                '12:00', '15:00', ' 18:00', '21:00', '24:00'))
+title(ylab = 'Radiation', xlab = 'Time (local time)', line = 2)
 # Diurnal global radiation
-plot(df_grp$hour,df_grp$RN,lwd=2,type='l')
+lines(df_grp$hour,df_grp$RN,lwd=2,xlab='Date',col='blue')
+legend('topleft', c('RG','RN'),lty = c(1,1),lwd = c(2,2),col = c('red','blue'))
+dev.off()
+
+#### Trend of global and net radiation ####
+## from Nov 2015 to Mar 2016 (5 months)
+# To calculate maximum value of RG of the day
+# Substitute the original data frame with temp data frame to change colnames
+# to 'date'
+library(openair)
+mean_df_now <- df_now
+colnames(mean_df_now)[1] <- 'date'
+mean_df_now$date <- as.POSIXct(mean_df_now$date)
+mean_df_now <- timeAverage(mean_df_now, avg.time = 'day', statistic = 'mean')
+png('figs/rg_trend.png', res = 360, width = 8, height = 8, units = 'cm')
+par(mai = c(0.8,0.8,0.1,0.1))
+# Remove the first day from the plot because it is too low
+with(mean_df_now[-1,],plot(date,RG_1_1_1,type='l',ylab='',xlab='',
+                           xaxt = 'n', col = 'red',ylim =c(0,300)))
+with(mean_df_now[-1,],lines(date,RN_1_1_1,col='blue'))
+title(xlab = 'Date', ylab = 'Daily mean radiation', line = 2.5)
+axis(side = 1, at = c(as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2015-12-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-01-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-02-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-03-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-04-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))])),
+     labels = c('Dec','Jan','Feb','Mar','Apr'))
+legend('bottomright', c('RG','RN'),lty = c(1,1),lwd = c(2,2),col = c('red','blue'))
+dev.off()
+rm(mean_df_now)
+
+colnames(df_now)[1] <- 'time_stamp'
 # Diurnal water temperature (surface) level 1
-plot(df_grp$hour,df_grp$TW1,lwd=2,type='l')
+plot(df_grp$hour,df_grp$TW1,lwd=2,type='l',ylab='TW1',xlab='Date')
 # Diurnal water temperature (under) level 2
-plot(df_grp$hour,df_grp$TW2,lwd=2,type='l')
+plot(df_grp$hour,df_grp$TW2,lwd=2,type='l',ylab='TW2',xlab='Date')
 # Diurnal air temperature
-plot(df_grp$hour,df_grp$TA,lwd=2,type='l')
+plot(df_grp$hour,df_grp$TA,lwd=2,type='l',ylab='T air',xlab='Date')
 # Diurnal RH
-plot(df_grp$hour,df_grp$RH,lwd=2,type='l')
+plot(df_grp$hour,df_grp$RH,lwd=2,type='l',ylab='RH',xlab='Date')

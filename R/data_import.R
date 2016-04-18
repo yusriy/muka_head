@@ -173,6 +173,9 @@ rm(i,j,level,temp_mean,temp_sd,ts,ts_mean,ts_sd)
 # Improbable values of RH
 df$RH_1_1_1[which(df$RH_1_1_1 > 100 | df$RH_1_1_1 < 0)] <- NA
 
+#### Filter RN_1_1_1 ####
+df$RN_1_1_1[which(df$RN_1_1_1 > 1000)] <- NA
+
 #### Calculate energy storage in water ####
 # Only 3 heights including the water surface temperature
 # These are estimated heights
