@@ -169,6 +169,35 @@ for (i in 1:nrow(df)){
 df$TS_1_1_1[which(ts < ts_mean - (level * ts_sd))] <- NA 
 rm(i,j,level,temp_mean,temp_sd,ts,ts_mean,ts_sd)
 
+#### Filter TS_2_1_1 values ####
+# Create temporary TS_2_1_1 value
+ts2 <- df$TS_2_1_1
+# Standard dev of TS_2_1_1
+ts2_sd <- numeric(nrow(df))
+# Mean of TS_2_1_1
+ts2_mean <- numeric(nrow(df))
+# Level of standard deviation
+level <- 3  # Just a very low bandwith filter to ensure that outside water
+# is removed
+## Calculate standard deviation of T
+# To count number of days
+j <- 1
+for (i in 1:nrow(df)){
+  if(df$day[i] == j){
+    ts2_sd[i] <- sd(df$TS_2_1_1[which(df$day==j)], na.rm = TRUE)
+    ts2_mean[i] <- mean(df$TS_2_1_1[which(df$day==j)], na.rm = TRUE)
+    temp_sd2 <- ts2_sd[i]
+    temp_mean2 <- ts2_mean[i]
+    j <- j + 1
+  } else {
+    ts2_sd[i] <- temp_sd2
+    ts2_mean[i] <- temp_mean2
+  }
+}
+# Remove all above water temperature readings by X level std. dev.
+df$TS_2_1_1[which(ts2 > ts2_mean + (level * ts2_sd))] <- NA 
+rm(i,j,level,temp_mean2,temp_sd2,ts2,ts2_mean,ts2_sd)
+
 #### Filter RH_1_1_1 ambient RH ####
 # Improbable values of RH
 df$RH_1_1_1[which(df$RH_1_1_1 > 100 | df$RH_1_1_1 < 0)] <- NA

@@ -129,7 +129,9 @@ plot(df_grp$hour,df_grp$H_stor,lwd=2,type='l',ylab='H storage',xlab='Date')
 plot(df_grp$hour,df_grp$H_stor_filter,lwd=2,type='l',ylab='Filtered H storage',
      xlab='Date')
 
-#### Diurnal plot of global and net radiation ####
+#### FINAL PLOTS ####
+
+#### * Diurnal plot of global and net radiation ####
 ## from Nov 2015 to Mar 2016 (5 months)
 library(Hmisc)
 # Comparison between diurnal RG and RN
@@ -148,7 +150,7 @@ lines(df_grp$hour,df_grp$RN,lwd=2,xlab='Date',col='blue')
 legend('topleft', c('RG','RN'),lty = c(1,1),lwd = c(2,2),col = c('red','blue'))
 dev.off()
 
-#### Trend of global and net radiation ####
+#### * Trend of global and net radiation ####
 ## from Nov 2015 to Mar 2016 (5 months)
 # To calculate maximum value of RG of the day
 # Substitute the original data frame with temp data frame to change colnames
@@ -194,6 +196,84 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
 legend('bottomright', c('RG','RN'),lty = c(1,1),lwd = c(2,2),col = c('red','blue'))
 dev.off()
 rm(mean_df_now)
+
+#### * Water temperature plots ####
+png('figs/water_temp.png', res = 360, width = 16, height = 8, units = 'cm')
+par(mai = c(0.8,0.8,0.1,0.1))
+plot(df_now$time_stamp, df_now$TS_1_1_1, col = 'red', type='l',xlab = '',
+     ylab = '',xaxt = 'n')
+lines(df_now$time_stamp, df_now$TS_2_1_1, col = 'blue', type = 'l')
+title(xlab = 'Date', ylab = 'Water temperature', line = 2.5)
+axis(side = 1, at = c(as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2015-12-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-01-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-02-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-03-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-04-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))])),
+     labels = c('Dec','Jan','Feb','Mar','Apr'))
+legend('bottomright', c(expression(paste('T'['1'])),expression(paste('T'['2']))),
+       lty = c(1,1),lwd = c(2,2),col = c('red','blue'))
+
+dev.off()
+
+
+#### * Heat stored in water plots ####
+png('figs/heat_stored.png', res = 360, width = 16, height = 8, units = 'cm')
+par(mai = c(0.8,0.8,0.1,0.1))
+plot(df_now$time_stamp, df_now$H_stor_filter, col = 'red', type = 'l', ylab = '',
+     xlab = '', xaxt = 'n', ylim = c(-2000,2000))
+title(xlab = 'Date', ylab = 'Heat stored in water', line = 2.5)
+axis(side = 2, at = -1000, labels = '-1000')
+axis(side = 1, at = c(as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2015-12-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-01-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-02-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-03-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-04-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))])),
+     labels = c('Dec','Jan','Feb','Mar','Apr'))
+dev.off()
+#x <- 1:nrow(df_now)
+#lmHstor <- lm(df_now$H_stor_filter ~ x)
+#x_mean <- 1:nrow(mean_df_now)
+#lmHstormean <- lm(mean_df_now$H_stor ~ x_mean)
 
 colnames(df_now)[1] <- 'time_stamp'
 # Diurnal water temperature (surface) level 1
