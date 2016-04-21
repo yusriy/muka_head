@@ -210,8 +210,8 @@ df$RN_1_1_1[which(df$RN_1_1_1 > 1000)] <- NA
 # These are estimated heights
 # Level 1: water surface = 0.0001 m 
 # Level 2: 2 m 
-# Level 3: 5 m
-heights <- c(1,3) 
+# Level 3: 3 m
+heights <- c(1,2) 
 # Calculating rho * cp for each level
 rho <- 1025 # Density of sea water = 1020 to 1029 kg m-3
 c_p <- 3850 # Specific heat capacity of sea water = 3850 J kg-1 C-1
