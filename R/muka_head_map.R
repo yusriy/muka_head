@@ -80,13 +80,13 @@ rm(map_main)
 mys0 <- getData("GADM", country="MYS", level=0) 
 
 # load shapefile
-oc <- readOGR(dsn="C:/Users/user/Documents/CO2_eddy/Data//countries_shp", layer="countries")
+oc <- readOGR(dsn="data/ne_10m_admin_0_countries", layer="ne_10m_admin_0_countries")
 
 # to draw a rectangle above the big map
 pol <- data.frame(xmin=99.8,xmax=100.6 ,ymin=5.0 ,ymax=5.85)
 
 malaysia <- ggplot() +
-  #geom_polygon(data=oc,aes(long,lat,group=group),fill="grey60") +
+  geom_polygon(data=oc,aes(long,lat,group=group),fill="grey60") +
   geom_polygon(data=mys0, aes(long,lat,group=group),colour="grey10",fill="grey90",size=0.2) +
   theme_bw() +
   labs(x=NULL,y=NULL) +
@@ -124,7 +124,7 @@ png(filename = "figs/fullmap.png",height=8,width=8,
     bg = "white",units='in', res = 360, family = "")
 fullMap
 dev.off()
-rm(malaysia,fullMap,map_main1,mys0,pol)
+rm(malaysia,fullMap,map_main1,mys0,pol,oc)
 
 
 
