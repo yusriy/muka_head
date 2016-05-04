@@ -24,17 +24,6 @@ library(dplyr)
 # would be the same.
 df <- df
 
-#### Wind speed and direction ####
-# Plot wind speed, U [m s-1]
-plot(df$time_stamp,df$wind_speed,type='l',xlab='Date',ylab='U',lwd=2)
-# Plot a new plot on top of the previous plot
-par(new=T)
-# Plot wind direction, WD [deg]
-plot(df$time_stamp,df$wind_dir,type='l',axes=FALSE,xlab=NA,ylab=NA,
-     col='red')
-axis(side = 4)
-mtext(side = 4, line = 3, 'WD')
-windRose(df,ws='wind_speed',wd='wind_dir',paddle=FALSE)
 
 #### Temperature and relative humidity ####
 # Plot temperature, T [deg C]
@@ -240,7 +229,7 @@ dev.off()
 png('figs/heat_stored.png', res = 360, width = 16, height = 8, units = 'cm')
 par(mai = c(0.8,0.8,0.1,0.1))
 plot(df_now$time_stamp, df_now$H_stor_filter, col = 'red', type = 'l', ylab = '',
-     xlab = '', xaxt = 'n', ylim = c(-2000,2000))
+     xlab = '', xaxt = 'n', ylim = c(-1000,1500))
 title(xlab = 'Date', ylab = 'Heat stored in water', line = 2.5)
 axis(side = 2, at = -1000, labels = '-1000')
 axis(side = 1, at = c(as.numeric(mean_df_now$date
@@ -270,17 +259,105 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
                                                               tz = 'GMT')))])),
      labels = c('Dec','Jan','Feb','Mar','Apr'))
 dev.off()
-#x <- 1:nrow(df_now)
-#lmHstor <- lm(df_now$H_stor_filter ~ x)
-#x_mean <- 1:nrow(mean_df_now)
-#lmHstormean <- lm(mean_df_now$H_stor ~ x_mean)
 
-colnames(df_now)[1] <- 'time_stamp'
-# Diurnal water temperature (surface) level 1
-plot(df_grp$hour,df_grp$TW1,lwd=2,type='l',ylab='TW1',xlab='Date')
-# Diurnal water temperature (under) level 2
-plot(df_grp$hour,df_grp$TW2,lwd=2,type='l',ylab='TW2',xlab='Date')
-# Diurnal air temperature
-plot(df_grp$hour,df_grp$TA,lwd=2,type='l',ylab='T air',xlab='Date')
-# Diurnal RH
-plot(df_grp$hour,df_grp$RH,lwd=2,type='l',ylab='RH',xlab='Date')
+#### * Energy balance ####
+quality_check_index_LE <- which(df_now$wind_check == 1 & df_now$qc_LE != 2 & df_now$qc_H != 2)
+quality_check_index_H <- which(df_now$wind_check == 1 & df_now$qc_H != 2 & df_now$qc_LE != 2)
+
+energy_out <- df_now$LE[index_wind] + df_now$H[index_wind] + df_now$H_stor_filter[index_wind]
+energy_in <- df_now$RN_1_1_1[index_wind]
+# Need to remove qc 2 from data
+png('figs/energy_balance.png', res = 360, width = 8, height = 8, units = 'cm')
+par(mai = c(0.6,0.6,0.1,0.1))
+plot(energy_in, energy_out, pch = 19, col = 'grey10', cex = 0.4,
+     xlim = c(-50,500), ylim = c(-500,1000), xlab = '', ylab ='')
+title(xlab = 'LE + H + G', ylab = 'RN', line = 2)
+lmEB <- lm(energy_out ~ energy_in)
+abline(lmEB, col ='blue', lwd = 4, lty = 2)
+abline(1,1, lwd = 4)
+legend('topleft', c('Diagonal','Regression'), lty = c(1,2), lwd = c(2,2), 
+       col = c('black','blue'))
+dev.off()
+# Remove temporary variables
+rm(energy_in, energy_out, index_wind, lmEB, 
+   quality_check_index_H, quality_check_index_LE)
+
+#### * Footprint and wind rose ####
+library(openair)
+# Windrose
+png('figs/wind_rose.png', res = 400, width = 8, height = 8, units = 'cm')
+windRose(df_now,ws='wind_speed',wd='wind_dir',
+         paddle=FALSE, par.settings=list(fontsize=list(text=8)))
+dev.off()
+# 90% Flux
+png('figs/footprint.png',res = 400, width = 8, height = 8, units = 'cm')
+names(df_now)[which(names(df_now) == 'x_90.')] <- 'Distance'
+polarPlot(df_now, x = 'Distance', wd = 'wind_dir', pollutant = 'wind_speed',statistic = 'mean',
+          exclude.missing = TRUE, key = list(header = 'Wind speed', footer = ''),
+          par.settings=list(fontsize=list(text=8)),angle.scale = 225)
+names(df_now)[which(names(df_now) == 'Distance')] <- 'x_90.'
+dev.off()
+
+# LE
+png('figs/LE_footprint.png',res = 400, width = 8, height = 8, units = 'cm')
+names(df_now)[which(names(df_now) == 'x_90.')] <- 'Distance'
+polarPlot(df_now, x = 'Distance', wd = 'wind_dir', pollutant = 'LE',statistic = 'mean',
+          exclude.missing = TRUE, key = list(header = 'LE', footer = ''),
+          par.settings=list(fontsize=list(text=8)),angle.scale = 225)
+names(df_now)[which(names(df_now) == 'Distance')] <- 'x_90.'
+dev.off()
+
+# H
+png('figs/H_footprint.png',res = 400, width = 8, height = 8, units = 'cm')
+names(df_now)[which(names(df_now) == 'x_90.')] <- 'Distance'
+polarPlot(df_now, x = 'Distance', wd = 'wind_dir', pollutant = 'H',statistic = 'mean',
+          exclude.missing = TRUE, key = list(header = 'H', footer = ''),
+          par.settings=list(fontsize=list(text=8)),angle.scale = 225)
+names(df_now)[which(names(df_now) == 'Distance')] <- 'x_90.'
+dev.off()
+
+# CO2 flux
+png('figs/co2_footprint.png',res = 400, width = 8, height = 8, units = 'cm')
+names(df_now)[which(names(df_now) == 'x_90.')] <- 'Distance'
+polarPlot(df_now, x = 'Distance', wd = 'wind_dir', pollutant = 'co2_flux',statistic = 'mean',
+          exclude.missing = TRUE, key = list(header = quickText('CO2'), footer = ''),
+          par.settings=list(fontsize=list(text=8)),angle.scale = 225)
+names(df_now)[which(names(df_now) == 'Distance')] <- 'x_90.'
+dev.off()
+
+#### * CO2 flux ####
+png('figs/co2_flux.png',width= 8, height= 8, res = 360, units='cm')
+par(mar=c(3.1,3.1,0.5,0.5))
+index <- which((df_now$qc_co2_flux==1 | df_now$qc_co2_flux == 0) & df_now$wind_check_strict == TRUE)
+#plot(df_now$time_stamp[-index],df_now$co2_flux[-index], pch=19,col='red')
+plot(df_now$time_stamp[index],df_now$co2_flux[index],col='black',type='l',lwd=2,
+     xlab='', ylab = '',xaxt='n')
+title(xlab = 'Date', ylab = expression('CO'['2']), line = 2)
+axis(side = 1, at = c(as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2015-12-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-01-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-02-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-03-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-04-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))])),
+     labels = c('Dec','Jan','Feb','Mar','Apr'))
+dev.off()
+

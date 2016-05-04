@@ -110,7 +110,8 @@ rm(time_stamp,df_biomet)
 # Obtain the indices to filter out the data for 180 < wind_dir < 270 
 # to exclude data from land.
 wind_check <- df$wind_dir <= 90 | df$wind_dir >= 270 # index to use flux data
-df <- cbind(df,wind_check)
+wind_check_strict <- df$wind_dir <= 90 # stricter wind check 
+df <- cbind(df,wind_check,wind_check_strict)
 rm(wind_check)
 
 #### Classifying into number of days ####
