@@ -361,3 +361,79 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
      labels = c('Dec','Jan','Feb','Mar','Apr'))
 dev.off()
 
+#### * H flux ####
+
+png('figs/H_flux.png',width= 8, height= 8, res = 360, units='cm')
+par(mar=c(3.1,3.1,0.5,0.5))
+index <- which((df_now$qc_H==1 | df_now$qc_H == 0) & df_now$wind_check_strict == TRUE)
+# Note that due to possible outliers but not detected by qc, the two
+# very negative points are excluded from the plot
+H_plot <- df_now$H
+H_plot[which(H_plot < -100)] <- NA
+
+plot(df_now$time_stamp[index],H_plot[index],col='black',type='l',lwd=2,
+     xlab='', ylab = '',xaxt='n')
+title(xlab = 'Date', ylab = 'H', line = 2)
+axis(side = 1, at = c(as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2015-12-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-01-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-02-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-03-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-04-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))])),
+     labels = c('Dec','Jan','Feb','Mar','Apr'))
+dev.off()
+rm(H_plot)
+#### * LE flux ####
+png('figs/LE_flux.png',width= 8, height= 8, res = 360, units='cm')
+par(mar=c(3.1,3.1,0.5,0.5))
+index <- which((df_now$qc_LE==1 | df_now$qc_LE == 0) & df_now$wind_check_strict == TRUE)
+#plot(df_now$time_stamp[-index],df_now$co2_flux[-index], pch=19,col='red')
+plot(df_now$time_stamp[index],df_now$LE[index],col='black',type='l',lwd=2,
+     xlab='', ylab = '',xaxt='n')
+title(xlab = 'Date', ylab = 'LE', line = 2)
+axis(side = 1, at = c(as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2015-12-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-01-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-02-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-03-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-04-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))])),
+     labels = c('Dec','Jan','Feb','Mar','Apr'))
+dev.off()
