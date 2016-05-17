@@ -437,3 +437,45 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
                                                               tz = 'GMT')))])),
      labels = c('Dec','Jan','Feb','Mar','Apr'))
 dev.off()
+
+#### * T and RH plots ####
+png('figs/RHT_plot.png', res = 360, width = 16, height = 8, units = 'cm')
+par(mai = c(0.7,0.7,0.1,0.7))
+plot(df_now$time_stamp, df_now$TA_1_1_1, col = 'red', type='l',xlab = '',
+     ylab = '',xaxt = 'n', ylim =c(20,34))
+par(new = TRUE)
+plot(df_now$time_stamp, df_now$RH, type = "l", col='blue',
+     axes = FALSE, bty = "n", xlab = "", ylab = "")
+axis(4, ylim=c(0,100),las=1)
+mtext("RH", side=4, line=2.5)
+title(xlab = 'Date', ylab = 'Air temperature', line = 2.5)
+axis(side = 1, at = c(as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2015-12-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-01-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-02-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-03-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-04-01',
+                                                              format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))])),
+     labels = c('Dec','Jan','Feb','Mar','Apr'))
+legend('bottomleft', c('T', 'RH'),
+       lty = c(1,1),lwd = c(2,2),col = c('red','blue'))
+
+dev.off()
