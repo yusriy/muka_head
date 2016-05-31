@@ -145,7 +145,7 @@ dev.off()
 # Substitute the original data frame with temp data frame to change colnames
 # to 'date'
 library(openair)
-mean_df_now <- df_now
+mean_df_now <- df
 colnames(mean_df_now)[1] <- 'date'
 mean_df_now$date <- as.POSIXct(mean_df_now$date)
 mean_df_now <- timeAverage(mean_df_now, avg.time = 'day', statistic = 'mean')
@@ -184,14 +184,14 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
      labels = c('Dec','Jan','Feb','Mar','Apr'))
 legend('bottomright', c('RG','RN'),lty = c(1,1),lwd = c(2,2),col = c('red','blue'))
 dev.off()
-rm(mean_df_now)
+#rm(mean_df_now)
 
 #### * Water temperature plots ####
 png('figs/water_temp.png', res = 360, width = 16, height = 8, units = 'cm')
 par(mai = c(0.8,0.8,0.1,0.1))
-plot(df_now$time_stamp, df_now$TS_1_1_1, col = 'red', type='l',xlab = '',
+plot(df$time_stamp, df$TS_1_1_1, col = 'red', type='l',xlab = '',
      ylab = '',xaxt = 'n')
-lines(df_now$time_stamp, df_now$TS_2_1_1, col = 'blue', type = 'l')
+lines(df$time_stamp, df$TS_2_1_1, col = 'blue', type = 'l')
 title(xlab = 'Date', ylab = 'Water temperature', line = 2.5)
 axis(side = 1, at = c(as.numeric(mean_df_now$date
                                  [which(mean_df_now$date == 
@@ -217,8 +217,13 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
                                  [which(mean_df_now$date == 
                                           as.POSIXct(strptime('2016-04-01',
                                                               format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-05-01',
+                                                              format = '%Y-%m-%d', 
                                                               tz = 'GMT')))])),
-     labels = c('Dec','Jan','Feb','Mar','Apr'))
+     labels = c('Dec','Jan','Feb','Mar','Apr','May'))
 legend('bottomright', c(expression(paste('T'['1'])),expression(paste('T'['2']))),
        lty = c(1,1),lwd = c(2,2),col = c('red','blue'))
 
@@ -228,7 +233,7 @@ dev.off()
 #### * Heat stored in water plots ####
 png('figs/heat_stored.png', res = 360, width = 16, height = 8, units = 'cm')
 par(mai = c(0.8,0.8,0.1,0.1))
-plot(df_now$time_stamp, df_now$H_stor_filter, col = 'red', type = 'l', ylab = '',
+plot(df$time_stamp, df$H_stor_filter, col = 'red', type = 'l', ylab = '',
      xlab = '', xaxt = 'n', ylim = c(-1000,1500))
 title(xlab = 'Date', ylab = 'Heat stored in water', line = 2.5)
 axis(side = 2, at = -1000, labels = '-1000')
@@ -261,11 +266,12 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
 dev.off()
 
 #### * Energy balance ####
-quality_check_index_LE <- which(df_now$wind_check == 1 & df_now$qc_LE != 2 & df_now$qc_H != 2)
-quality_check_index_H <- which(df_now$wind_check == 1 & df_now$qc_H != 2 & df_now$qc_LE != 2)
+index_wind <- which(df$wind_check == 1)
+quality_check_index_LE <- which(df$wind_check == 1 & df$qc_LE != 2 & df$qc_H != 2)
+quality_check_index_H <- which(df$wind_check == 1 & df$qc_H != 2 & df$qc_LE != 2)
 
-energy_out <- df_now$LE[index_wind] + df_now$H[index_wind] + df_now$H_stor_filter[index_wind]
-energy_in <- df_now$RN_1_1_1[index_wind]
+energy_out <- df$LE[index_wind] + df$H[index_wind] + df$H_stor_filter[index_wind]
+energy_in <- df$RN_1_1_1[index_wind]
 # Need to remove qc 2 from data
 png('figs/energy_balance.png', res = 360, width = 8, height = 8, units = 'cm')
 par(mai = c(0.6,0.6,0.1,0.1))
@@ -286,51 +292,51 @@ rm(energy_in, energy_out, index_wind, lmEB,
 library(openair)
 # Windrose
 png('figs/wind_rose.png', res = 400, width = 8, height = 8, units = 'cm')
-windRose(df_now,ws='wind_speed',wd='wind_dir',
+windRose(df,ws='wind_speed',wd='wind_dir',
          paddle=FALSE, par.settings=list(fontsize=list(text=8)))
 dev.off()
 # 90% Flux
 png('figs/footprint.png',res = 400, width = 8, height = 8, units = 'cm')
-names(df_now)[which(names(df_now) == 'x_90.')] <- 'Distance'
-polarPlot(df_now, x = 'Distance', wd = 'wind_dir', pollutant = 'wind_speed',statistic = 'mean',
+names(df)[which(names(df) == 'x_90.')] <- 'Distance'
+polarPlot(df, x = 'Distance', wd = 'wind_dir', pollutant = 'wind_speed',statistic = 'mean',
           exclude.missing = TRUE, key = list(header = 'Wind speed', footer = ''),
           par.settings=list(fontsize=list(text=8)),angle.scale = 225)
-names(df_now)[which(names(df_now) == 'Distance')] <- 'x_90.'
+names(df)[which(names(df) == 'Distance')] <- 'x_90.'
 dev.off()
 
 # LE
 png('figs/LE_footprint.png',res = 400, width = 8, height = 8, units = 'cm')
-names(df_now)[which(names(df_now) == 'x_90.')] <- 'Distance'
-polarPlot(df_now, x = 'Distance', wd = 'wind_dir', pollutant = 'LE',statistic = 'mean',
+names(df)[which(names(df) == 'x_90.')] <- 'Distance'
+polarPlot(df, x = 'Distance', wd = 'wind_dir', pollutant = 'LE',statistic = 'mean',
           exclude.missing = TRUE, key = list(header = 'LE', footer = ''),
           par.settings=list(fontsize=list(text=8)),angle.scale = 225)
-names(df_now)[which(names(df_now) == 'Distance')] <- 'x_90.'
+names(df)[which(names(df) == 'Distance')] <- 'x_90.'
 dev.off()
 
 # H
 png('figs/H_footprint.png',res = 400, width = 8, height = 8, units = 'cm')
-names(df_now)[which(names(df_now) == 'x_90.')] <- 'Distance'
-polarPlot(df_now, x = 'Distance', wd = 'wind_dir', pollutant = 'H',statistic = 'mean',
+names(df)[which(names(df) == 'x_90.')] <- 'Distance'
+polarPlot(df, x = 'Distance', wd = 'wind_dir', pollutant = 'H',statistic = 'mean',
           exclude.missing = TRUE, key = list(header = 'H', footer = ''),
           par.settings=list(fontsize=list(text=8)),angle.scale = 225)
-names(df_now)[which(names(df_now) == 'Distance')] <- 'x_90.'
+names(df)[which(names(df) == 'Distance')] <- 'x_90.'
 dev.off()
 
 # CO2 flux
 png('figs/co2_footprint.png',res = 400, width = 8, height = 8, units = 'cm')
-names(df_now)[which(names(df_now) == 'x_90.')] <- 'Distance'
-polarPlot(df_now, x = 'Distance', wd = 'wind_dir', pollutant = 'co2_flux',statistic = 'mean',
+names(df)[which(names(df) == 'x_90.')] <- 'Distance'
+polarPlot(df, x = 'Distance', wd = 'wind_dir', pollutant = 'co2_flux',statistic = 'mean',
           exclude.missing = TRUE, key = list(header = quickText('CO2'), footer = ''),
           par.settings=list(fontsize=list(text=8)),angle.scale = 225)
-names(df_now)[which(names(df_now) == 'Distance')] <- 'x_90.'
+names(df)[which(names(df) == 'Distance')] <- 'x_90.'
 dev.off()
 
 #### * CO2 flux ####
 png('figs/co2_flux.png',width= 8, height= 8, res = 360, units='cm')
 par(mar=c(3.1,3.1,0.5,0.5))
-index <- which((df_now$qc_co2_flux==1 | df_now$qc_co2_flux == 0) & df_now$wind_check_strict == TRUE)
-#plot(df_now$time_stamp[-index],df_now$co2_flux[-index], pch=19,col='red')
-plot(df_now$time_stamp[index],df_now$co2_flux[index],col='black',type='l',lwd=2,
+index <- which((df$qc_co2_flux==1 | df$qc_co2_flux == 0) & df$wind_check_strict == TRUE)
+#plot(df$time_stamp[-index],df$co2_flux[-index], pch=19,col='red')
+plot(df$time_stamp[index],df$co2_flux[index],col='black',type='l',lwd=2,
      xlab='', ylab = '',xaxt='n')
 title(xlab = 'Date', ylab = expression('CO'['2']), line = 2)
 axis(side = 1, at = c(as.numeric(mean_df_now$date
@@ -357,21 +363,26 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
                                  [which(mean_df_now$date == 
                                           as.POSIXct(strptime('2016-04-01',
                                                               format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-05-01',
+                                                              format = '%Y-%m-%d', 
                                                               tz = 'GMT')))])),
-     labels = c('Dec','Jan','Feb','Mar','Apr'))
+     labels = c('Dec','Jan','Feb','Mar','Apr','May'))
 dev.off()
 
 #### * H flux ####
 
 png('figs/H_flux.png',width= 8, height= 8, res = 360, units='cm')
 par(mar=c(3.1,3.1,0.5,0.5))
-index <- which((df_now$qc_H==1 | df_now$qc_H == 0) & df_now$wind_check_strict == TRUE)
+index <- which((df$qc_H==1 | df$qc_H == 0) & df$wind_check_strict == TRUE)
 # Note that due to possible outliers but not detected by qc, the two
 # very negative points are excluded from the plot
-H_plot <- df_now$H
+H_plot <- df$H
 H_plot[which(H_plot < -100)] <- NA
 
-plot(df_now$time_stamp[index],H_plot[index],col='black',type='l',lwd=2,
+plot(df$time_stamp[index],H_plot[index],col='black',type='l',lwd=2,
      xlab='', ylab = '',xaxt='n')
 title(xlab = 'Date', ylab = 'H', line = 2)
 axis(side = 1, at = c(as.numeric(mean_df_now$date
@@ -398,16 +409,22 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
                                  [which(mean_df_now$date == 
                                           as.POSIXct(strptime('2016-04-01',
                                                               format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-05-01',
+                                                              format = '%Y-%m-%d', 
                                                               tz = 'GMT')))])),
-     labels = c('Dec','Jan','Feb','Mar','Apr'))
+     
+     labels = c('Dec','Jan','Feb','Mar','Apr','May'))
 dev.off()
 rm(H_plot)
 #### * LE flux ####
 png('figs/LE_flux.png',width= 8, height= 8, res = 360, units='cm')
 par(mar=c(3.1,3.1,0.5,0.5))
-index <- which((df_now$qc_LE==1 | df_now$qc_LE == 0) & df_now$wind_check_strict == TRUE)
-#plot(df_now$time_stamp[-index],df_now$co2_flux[-index], pch=19,col='red')
-plot(df_now$time_stamp[index],df_now$LE[index],col='black',type='l',lwd=2,
+index <- which((df$qc_LE==1 | df$qc_LE == 0) & df$wind_check_strict == TRUE)
+#plot(df$time_stamp[-index],df$co2_flux[-index], pch=19,col='red')
+plot(df$time_stamp[index],df$LE[index],col='black',type='l',lwd=2,
      xlab='', ylab = '',xaxt='n')
 title(xlab = 'Date', ylab = 'LE', line = 2)
 axis(side = 1, at = c(as.numeric(mean_df_now$date
@@ -434,17 +451,22 @@ axis(side = 1, at = c(as.numeric(mean_df_now$date
                                  [which(mean_df_now$date == 
                                           as.POSIXct(strptime('2016-04-01',
                                                               format = '%Y-%m-%d', 
+                                                              tz = 'GMT')))]),
+                      as.numeric(mean_df_now$date
+                                 [which(mean_df_now$date == 
+                                          as.POSIXct(strptime('2016-05-01',
+                                                              format = '%Y-%m-%d', 
                                                               tz = 'GMT')))])),
-     labels = c('Dec','Jan','Feb','Mar','Apr'))
+     labels = c('Dec','Jan','Feb','Mar','Apr','May'))
 dev.off()
 
 #### * T and RH plots ####
 png('figs/RHT_plot.png', res = 360, width = 16, height = 8, units = 'cm')
 par(mai = c(0.7,0.7,0.1,0.7))
-plot(df_now$time_stamp, df_now$TA_1_1_1, col = 'red', type='l',xlab = '',
+plot(df$time_stamp, df$TA_1_1_1, col = 'red', type='l',xlab = '',
      ylab = '',xaxt = 'n', ylim =c(20,34))
 par(new = TRUE)
-plot(df_now$time_stamp, df_now$RH, type = "l", col='blue',
+plot(df$time_stamp, df$RH, type = "l", col='blue',
      axes = FALSE, bty = "n", xlab = "", ylab = "")
 axis(4, ylim=c(0,100),las=1)
 mtext("RH", side=4, line=2.5)
