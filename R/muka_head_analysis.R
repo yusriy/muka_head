@@ -24,6 +24,26 @@ library(dplyr)
 # would be the same.
 df <- df
 
+#### El-Nino-Southern Oscillation classification ####
+# Note: if before 2016-06-01 00:00:00 then ENSO and if not then non-ENSO
+
+enso <- df$time_stamp < as.POSIXct('2016-06-01 00:00:00', 
+                                   '%Y-%m-%d %H:%M:%S', 
+                                   tz = 'Asia/Kuala_Lumpur')
+
+#### Import weather data from IPENANGP2 for precipitation (mm) ####
+weather <- read.csv('data/ipenangp2_weather_data.csv', header = TRUE)
+precip <- weather$HourlyPrecipMM
+date <- weather$Time
+date <- as.POSIXct(date, '%Y-%m-%d %H:%M:%S', tz = 'Asia/Kuala_Lumpur')
+rain <- data.frame(date,precip)
+rainHR <- timeAverage(rain, avg.time = '30 min', statistic = 'mean')
+rm(rain, rainHR, weather, precip,date)
+# Merge precipitation data with EC data
+df1 <- merge(df, rainHR, by.x = 'time_stamp', by.y = 'date')
+# Check if rain
+rain_index <- df1$precip > 0
+rain_index[is.na(rain_index)] <- FALSE
 
 #### Temperature and relative humidity ####
 # Plot temperature, T [deg C]
