@@ -10,54 +10,52 @@ indexH <- (df$qc_H==1 | df$qc_H == 0) &
   df$wind_check_strict & rain_index != TRUE
 
 
-
-
-
-
-# median co2 flux during ENSO
-median(df$co2_flux[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
-# median co2 flux after ENSO
-median(df$co2_flux[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+#### Mean values of fluxes ####
+# mean co2 flux during ENSO
+mean(df$co2_flux[which(indexCO2 == TRUE & enso == TRUE)], na.rm = TRUE)
+# mean co2 flux after ENSO
+mean(df$co2_flux[which(indexCO2 == TRUE & enso == FALSE)], na.rm = TRUE)
 
 # mean LE flux during ENSO
-mean(df$LE[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
+mean(df$LE[which(indexLE == TRUE & enso == TRUE)], na.rm = TRUE)
 # mean LE after ENSO
-mean(df$LE[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+mean(df$LE[which(indexLE == TRUE & enso == FALSE)], na.rm = TRUE)
 
 # mean H flux during ENSO
-mean(df$H[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
+mean(df$H[which(indexH == TRUE & enso == TRUE)], na.rm = TRUE)
 # mean LE after ENSO
-mean(df$H[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+mean(df$H[which(indexH == TRUE & enso == FALSE)], na.rm = TRUE)
 
+#### Mean values of met parameters ####
 # mean net radiation during ENSO
-mean(df$RN_1_1_1[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
+mean(df$RN_1_1_1[which(enso == TRUE)], na.rm = TRUE)
 # mean co2 flux after ENSO
-mean(df$RN_1_1_1[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+mean(df$RN_1_1_1[which(enso == FALSE)], na.rm = TRUE)
 
 # mean global radiation during ENSO
-mean(df$RG_1_1_1[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
+mean(df$RG_1_1_1[which(enso == TRUE)], na.rm = TRUE)
 # mean co2 flux after ENSO
-mean(df$RG_1_1_1[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+mean(df$RG_1_1_1[which(enso == FALSE)], na.rm = TRUE)
 
 # mean SST flux during ENSO
-mean(df$TW_1_1_1[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
+mean(df$TW_1_1_1[which(enso == TRUE)], na.rm = TRUE)
 # mean SST flux after ENSO
-mean(df$TW_1_1_1[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+mean(df$TW_1_1_1[which(enso == FALSE)], na.rm = TRUE)
 
 # mean atm T flux during ENSO
-mean(df$TA_1_1_1[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
+mean(df$TA_1_1_1[which(enso == TRUE)], na.rm = TRUE)
 # mean SST flux after ENSO
-mean(df$TA_1_1_1[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+mean(df$TA_1_1_1[which(enso == FALSE)], na.rm = TRUE)
 
 # mean RH during ENSO
-mean(df$RH_1_1_1[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
+mean(df$RH_1_1_1[which(enso == TRUE)], na.rm = TRUE)
 # mean RH after ENSO
-mean(df$RH_1_1_1[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+mean(df$RH_1_1_1[which(enso == FALSE)], na.rm = TRUE)
 
 # mean TS_2 during ENSO
-mean(df$TS_2_1_1[which(index == TRUE & enso == TRUE)], na.rm = TRUE)
+mean(df$TS_2_1_1[which(enso == TRUE)], na.rm = TRUE)
 # mean TS_2 after ENSO
-mean(df$TS_2_1_1[which(index == TRUE & enso == FALSE)], na.rm = TRUE)
+mean(df$TS_2_1_1[which(enso == FALSE)], na.rm = TRUE)
 
 # Some plots
 plot(df$time_stamp[which(index == TRUE & enso == TRUE)],
