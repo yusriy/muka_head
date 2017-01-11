@@ -30,12 +30,12 @@ source('R/tools/tool_map_createscale.R') # Script to source functions of scales
 
 ##### * Zoomed in map of station #####
 sitemap <- get_googlemap(center = c(lon = 100.2025,lat = 5.4750), sensor=TRUE,
-                         size = c(640,640), scale = 2, zoom = 15, maptype = "satellite")
+                         size = c(640,640), scale = 2, zoom = 15, maptype = "terrain")
 
 map_plot <- ggmap(sitemap) +
-  geom_point(aes_string(x = "100.2003",y = "5.4685"),size = 5,shape=16,colour="black")+
-  geom_text(aes_string(x="100.2002",y="5.4685"),label="Muka Head Station",colour="white",size=7,
-            fontface="bold",hjust=0,vjust=-1.00) +
+  geom_point(aes_string(x = "100.2003",y = "5.4685"),size = 5,shape = 16,colour = "black")+
+  geom_text(aes_string(x="100.2002",y="5.4685"),label="Muka Head Station",colour="white",size=4.5,
+            fontface="bold",hjust=0,vjust=-1.00, family = 'Times') +
   xlab("") + ylab("") +
   theme(plot.title = element_text(lineheight=1, face="bold",size = 25, colour = "grey20"),
         axis.line=element_blank(),
@@ -43,11 +43,11 @@ map_plot <- ggmap(sitemap) +
         axis.text.x=element_blank(),
         axis.text.y=element_blank(),
         axis.ticks=element_blank()) +
-  scaleBar(lon = 100.19, lat = 5.486, distanceLon = 1, distanceLat = 0.05, distanceLegend = 0.15,
+  scaleBar(lon = 100.192, lat = 5.486, distanceLon = 1, distanceLat = 0.05, distanceLegend = 0.15,
            dist.unit = "km", orientation = FALSE)
 #Plot site map
-png(filename = "figs/muka_head_plot_zoom.png",height=8,width=8,
-    bg = "white",units='in', res = 360, family = "")
+jpeg(filename = "maps/muka_head_plot_zoom.jpg",height=8,width=8,
+    bg = "white",units='cm', res = 300, family = "Times")
 map_plot
 dev.off()
 rm(sitemap,map_plot)
@@ -65,9 +65,9 @@ map_main1 <- map_main +
         legend.justification = c(0, 0),
         legend.background = element_rect(colour = F, fill = "white"),
         legend.key = element_rect (fill = F, colour = F),
-        axis.title=element_text(size=14,face="bold",colour="grey19"),
-        axis.text.x=element_text(size=14,face="bold",colour="grey19"),
-        axis.text.y=element_text(size=14,face="bold",colour="grey19"),
+        axis.title=element_text(size=14,face="bold",colour="grey19", family = 'Times'),
+        axis.text.x=element_text(size=14,face="bold",colour="grey19", family = 'Times'),
+        axis.text.y=element_text(size=14,face="bold",colour="grey19", family = 'Times'),
         panel.border = element_rect(colour = "grey19",fill=F,size=1.2)) +
   scaleBar(lon = 99.8, lat = 5.12, distanceLon = 25, distanceLat = 2, distanceLegend = 5,
            dist.unit = "km", orientation = FALSE)
@@ -90,14 +90,14 @@ malaysia <- ggplot() +
   geom_polygon(data=mys0, aes(long,lat,group=group),colour="grey10",fill="grey90",size=0.2) +
   theme_bw() +
   labs(x=NULL,y=NULL) +
-  annotate("text", x = 102.4, y = 3.75, label = "PENINSULAR\nMALAYSIA",size=5,fontface="bold") +
-  annotate("text", x = 99.8, y = 2, label = "SUMATERA,\nINDONESIA",size=5,fontface="bold") +
+  annotate("text", x = 102.4, y = 3.75, label = "PENINSULAR\nMALAYSIA",size=5,fontface="bold", family = 'Times') +
+  annotate("text", x = 99.8, y = 2, label = "SUMATERA,\nINDONESIA",size=5,fontface="bold", family = 'Times') +
   ggtitle("\nLOCALITY MAP") + 
   coord_equal(xlim=c(96, 107), ylim=c(0.5, 7)) +
   geom_rect(data = pol, aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax), alpha = 0.6, colour = "red", size = 1, linetype = 1) +
   theme(axis.text.x =element_blank(),axis.text.y= element_blank(), axis.ticks=element_blank(),axis.title.x =element_blank(),
         axis.title.y= element_blank(),panel.border = element_rect(colour="white",fill=FALSE),
-        plot.title = element_text(lineheight=0.2, face="bold",size =18, colour = "grey20"),
+        plot.title = element_text(lineheight=0.2, face="bold",size =18, colour = "grey20", family = 'Times', hjust = 0.5),
         plot.background = element_rect(colour="black",fill="white",size=1),
         panel.grid.major=element_blank(),panel.grid.minor=element_blank(),
         plot.margin=unit(c(0.0,1,0.1,0.1),"mm")) 
@@ -120,7 +120,7 @@ fullMap <- map_main1 +
         xmin = 99.8,  xmax = 100.3, ymin = 5.40, ymax = 6.05) +
   theme(plot.title = element_text(face = "bold",size = 14,colour="grey19"))
 
-png(filename = "figs/fullmap.png",height=8,width=8,
+jpeg(filename = "maps/fullmap.jpg",height=8,width=8,
     bg = "white",units='in', res = 360, family = "")
 fullMap
 dev.off()
