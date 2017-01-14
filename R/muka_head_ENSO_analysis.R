@@ -74,8 +74,8 @@ rm(df_grp_sd,df_grp_mean)
 
 #### Mean values of fluxes ####
 # mean and std dev CO2 flux
-mean(df$co2_flux, na.rm = TRUE)
-sd(df$co2_flux, na.rm = TRUE)
+mean(df$co2_flux[which(indexCO2_5 == TRUE)], na.rm = TRUE)
+sd(df$co2_flux[which(indexCO2_5 == TRUE)], na.rm = TRUE)
 
 # mean co2 flux during ENSO
 mean(df$co2_flux[which(indexCO2_5_enso == TRUE)], na.rm = TRUE)
@@ -337,6 +337,130 @@ axis(side = 1, at = c(as.POSIXct('2015-12-01 00:00:00', format = '%Y-%m-%d %H:%M
 minor.tick(nx = 1)
 dev.off()
 
+#### Boxplots for CO2 between ENSO and non-ENSO ####
+path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/co2boxplot.jpg')
+jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
+par(family='Times')
+par(mar = c(2.1,4.1,0.1, 0.1))
+boxplot(df$co2_flux[which(indexCO2_5_enso == TRUE)],
+        df$co2_flux[which(indexCO2_5_xenso == TRUE)], outline = FALSE,
+        names = c('ENSO','non-ENSO'), 
+        ylab = '', cex.lab = 1.2, 
+        cex.axis = 1.2, ylim = c(-0.5,0.5))
+mtext(side = 2, expression(paste('CO'['2'],' flux')), 
+      line = 2.1, cex = 1.2)
+dev.off()
+
+
+#### Overall diurnal CO2 flux plot ####
+path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/co2_diurnal.jpg')
+jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
+par(family='Times')
+par(mar = c(3.1,3.4,0.1, 0.1))
+plot(df_grp$hour, df_grp$co2_flux, type = 'l', ylim = c(-2.5,2.5), xlim = c(-1,25),
+     xlab = '', ylab = '', xaxt = 'n')
+mtext(side = 1, 'Hour (local time)', line = 2.1, cex = 1.2)
+mtext(side = 2, expression(paste('CO'['2'],' flux')), 
+      line = 2.1, cex = 1.2)
+axis(side = 1, at = c(0,3,6,9,12,18,24), labels = c(0,3,6,9,12,18,24))
+axis(side = 1, at = c(15,21), labels = c(15,21))
+
+#hour <- df_grp$hour
+#co2_down <- df_grp$co2_flux - df_grp$co2_flux_sd
+#co2_up <- df_grp$co2_flux + df_grp$co2_flux_sd
+#polygon(c(hour, rev(hour)), c(co2_up, rev(co2_down)),
+#        col=adjustcolor("grey",alpha.f=0.5), border = NA)
+dev.off()
+
+#### Correlational analysis and plots between CO2 and physical drivers ####
+# Sea surface temperature
+path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/SSTcor.jpg')
+jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
+par(family='Times')
+par(mar = c(4.1,4.1,0.5, 0.5))
+plot(df$TS_1_1_1[which(indexCO2_5 == TRUE)],
+     df$co2_flux[which(indexCO2_5 == TRUE)], pch = 19,
+     xlab = expression('T'['S']), ylab = expression(paste('CO'['2'],' flux')),
+     xlim= c(28,31), ylim = c(-0.3,0.3), col = 'grey60')
+axis(side = 2, at = c(-0.2,0), labels = c(-0.2,0))
+minor.tick()
+lmT <- lm(df$co2_flux[which(indexCO2_5 == TRUE)] ~ 
+            df$TS_1_1_1[which(indexCO2_5 == TRUE)])
+lmTenso <- lm(df$co2_flux[which(indexCO2_5_enso == TRUE)] ~ 
+            df$TS_1_1_1[which(indexCO2_5_enso == TRUE)])
+lmTxenso <- lm(df$co2_flux[which(indexCO2_5_xenso == TRUE)] ~ 
+                df$TS_1_1_1[which(indexCO2_5_xenso == TRUE)])
+abline(lmT, col = 'green', lwd = 3, lty = 2)
+abline(lmTenso, col = 'red', lwd = 3, lty = 2)
+abline(lmTxenso, col = 'blue', lwd = 3, lty = 2)
+summary(lmT)
+summary(lmTenso)
+summary(lmTxenso)
+dev.off()
+
+# Wind speed
+path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/Ucor.jpg')
+jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
+par(family='Times')
+par(mar = c(4.1,4.1,0.5, 0.5))
+plot(df$wind_speed[which(indexCO2_5 == TRUE)],
+     df$co2_flux[which(indexCO2_5 == TRUE)], pch = 19,
+     xlab = 'U', ylab = expression(paste('CO'['2'],' flux')),
+     xlim= c(0,3), ylim = c(-0.3,0.3), col = 'grey60')
+axis(side = 2, at = c(-0.2,0), labels = c(-0.2,0))
+minor.tick()
+lmU <- lm(df$co2_flux[which(indexCO2_5 == TRUE)] ~ 
+            df$wind_speed[which(indexCO2_5 == TRUE)])
+lmUenso <- lm(df$co2_flux[which(indexCO2_5_enso == TRUE)] ~ 
+                df$wind_speed[which(indexCO2_5_enso == TRUE)])
+lmUxenso <- lm(df$co2_flux[which(indexCO2_5_xenso == TRUE)] ~ 
+                 df$wind_speed[which(indexCO2_5_xenso == TRUE)])
+abline(lmU, col = 'green', lwd = 3, lty = 2)
+abline(lmUenso, col = 'red', lwd = 3, lty = 2)
+abline(lmUxenso, col = 'blue', lwd = 3, lty = 2)
+summary(lmU)
+summary(lmUenso)
+summary(lmUxenso)
+dev.off()
+
+# Net radiation
+path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/RNcor.jpg')
+jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
+par(family='Times')
+par(mar = c(4.1,4.1,0.5, 0.5))
+plot(df$RN_1_1_1[which(indexCO2_5 == TRUE)],
+     df$co2_flux[which(indexCO2_5 == TRUE)], pch = 19,
+     xlab = 'RN', ylab = expression(paste('CO'['2'],' flux')),
+     xlim= c(-100,300), ylim = c(-0.3,0.3), col = 'grey60')
+axis(side = 2, at = c(-0.2,0), labels = c(-0.2,0))
+minor.tick()
+lmRN <- lm(df$co2_flux[which(indexCO2_5 == TRUE)] ~ 
+            df$RN_1_1_1[which(indexCO2_5 == TRUE)])
+lmRNenso <- lm(df$co2_flux[which(indexCO2_5_enso == TRUE)] ~ 
+                df$RN_1_1_1[which(indexCO2_5_enso == TRUE)])
+lmRNxenso <- lm(df$co2_flux[which(indexCO2_5_xenso == TRUE)] ~ 
+                 df$RN_1_1_1[which(indexCO2_5_xenso == TRUE)])
+abline(lmRN, col = 'green', lwd = 3, lty = 2)
+abline(lmRNenso, col = 'red', lwd = 3, lty = 2)
+abline(lmRNxenso, col = 'blue', lwd = 3, lty = 2)
+summary(lmRN)
+summary(lmRNenso)
+summary(lmRNxenso)
+dev.off()
+
+
+
+
+
+
+
+
+#### Density plots for CO2 between ENSO and non-ENSO ####
+co2_enso <- density(df$co2_flux[which(indexCO2_5_enso == TRUE)])
+co2_xenso <- density(df$co2_flux[which(indexCO2_5_xenso == TRUE)])
+plot(co2_enso, ylim = c(0, 7))
+lines(co2_xenso, col = 'red')
+
 #### RN and RG ####
 path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/RN_RG.jpg')
 jpeg(file=path_fig,width=16,height=8,res=400, units = 'cm')
@@ -358,22 +482,3 @@ plot(df$time_stamp, df$RN_1_1_1, type = 'l',
      col = 'orange')
 dev.off()
 
-#### Density plots for CO2 between ENSO and non-ENSO ####
-co2_enso <- density(df$co2_flux[which(indexCO2_5_enso == TRUE)])
-co2_xenso <- density(df$co2_flux[which(indexCO2_5_xenso == TRUE)])
-plot(co2_enso, ylim = c(0, 7))
-lines(co2_xenso, col = 'red')
-
-#### Boxplots for CO2 between ENSO and non-ENSO ####
-path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/co2boxplot.jpg')
-jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
-par(family='Times')
-par(mar = c(2.1,4.1,0.1, 0.1))
-boxplot(df$co2_flux[which(indexCO2_5_enso == TRUE)],
-        df$co2_flux[which(indexCO2_5_xenso == TRUE)], outline = FALSE,
-        names = c('ENSO','non-ENSO'), 
-        ylab = '', cex.lab = 1.2, 
-        cex.axis = 1.2, ylim = c(-0.5,0.5))
-mtext(side = 2, expression(paste('CO'['2'],' flux')), 
-      line = 2.1, cex = 1.2)
-dev.off()

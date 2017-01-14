@@ -127,5 +127,52 @@ dev.off()
 rm(malaysia,fullMap,map_main1,mys0,pol,oc)
 
 
+#### Larger map of seas for comparison ####
+#coordinates
+longitudeSink <- c(124,126,125,100.2)
+latitudeSink <- c(31,33,30,5.5)
+co2fluxSink <- c(1.9,0.79,1.45,2.10)
+longitudeSource <- c(101.6,116)
+latitudeSource <- c(2.4,22)
+co2fluxSource <- c(0.1,0.86)
+coordSink <- data.frame(longitudeSink,latitudeSink,co2fluxSink)
+coordSource <- data.frame(longitudeSource,latitudeSource,co2fluxSource)
+rm(longitudeSource,latitudeSource,co2fluxSource,longitudeSink,latitudeSink,co2fluxSink)
+sitemap1 <- get_googlemap(center = c(lon = 115,lat = 20), sensor=TRUE,
+                         size = c(640,640), scale = 2, zoom = 4, maptype = "terrain")
+
+map_plot1 <- ggmap(sitemap1) 
+map_plot1 <- map_plot1 + 
+  geom_point(data=coordSink,aes(x=longitudeSink,y=latitudeSink,size=1000*co2fluxSink,
+                                color=co2fluxSink)) +
+  scale_color_gradient(low = 'lightgreen', high = 'darkgreen', 
+                       name = expression(paste('CO'['2'], ' sink'))) +
+  geom_point(data=coordSource,aes(x=longitudeSource,y=latitudeSource,size=1000*co2fluxSource,
+                                  fill = co2fluxSource), shape = 21) +
+  scale_fill_gradient(low = 'red', high = 'darkred', 
+                      name = expression(paste('CO'['2'], ' source'))) +
+  guides(size = FALSE) +
+  labs(x = 'Longitude', y = 'Latitude') +
+  theme(axis.title=element_text(size=16,colour="grey19", family = 'Times'),
+        axis.text.x=element_text(size=16,colour="grey19", family = 'Times'),
+        axis.text.y=element_text(size=16,colour="grey19", family = 'Times'),
+        legend.title=element_text(size = 16, family ='Times'),
+        legend.text=element_text(size = 16, family='Times'),
+        plot.margin=unit(c(0,0,0,0),"mm"))
+  
+  
+jpeg(filename = "figs/CO2map.jpg",height=16,width=16,
+     bg = "white",units='cm', res = 360)
+map_plot1
+dev.off()
 
 
+#### Map that shows green hue ####
+map_algae <- ggmap(get_googlemap(center = c(lon = 100.2025,lat = 5.4750), sensor=TRUE,
+                                 size = c(640,640), scale = 2, zoom = 15, maptype = "satellite")) +
+  labs(x = 'Longitude', y = 'Latitude')
+  
+jpeg(filename = "figs/mapGreen.jpg",height=16,width=16,
+     bg = "white",units='cm', res = 360)
+map_algae
+dev.off()
