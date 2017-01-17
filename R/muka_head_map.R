@@ -143,15 +143,15 @@ sitemap1 <- get_googlemap(center = c(lon = 115,lat = 20), sensor=TRUE,
 
 map_plot1 <- ggmap(sitemap1) 
 map_plot1 <- map_plot1 + 
-  geom_point(data=coordSink,aes(x=longitudeSink,y=latitudeSink,size=1000*co2fluxSink,
+  geom_point(data=coordSink,aes(x=longitudeSink,y=latitudeSink,size=co2fluxSink,
                                 color=co2fluxSink)) +
-  scale_color_gradient(low = 'lightgreen', high = 'darkgreen', 
+  scale_color_gradient(low = 'green', high = 'darkgreen', 
                        name = expression(paste('CO'['2'], ' sink'))) +
-  geom_point(data=coordSource,aes(x=longitudeSource,y=latitudeSource,size=1000*co2fluxSource,
+  geom_point(data=coordSource,aes(x=longitudeSource,y=latitudeSource,size=co2fluxSource,
                                   fill = co2fluxSource), shape = 21) +
   scale_fill_gradient(low = 'red', high = 'darkred', 
                       name = expression(paste('CO'['2'], ' source'))) +
-  guides(size = FALSE) +
+  guides(size = FALSE) + scale_size(range = c(5,10)) +
   labs(x = 'Longitude', y = 'Latitude') +
   theme(axis.title=element_text(size=16,colour="grey19", family = 'Times'),
         axis.text.x=element_text(size=16,colour="grey19", family = 'Times'),
