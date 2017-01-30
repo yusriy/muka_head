@@ -32,18 +32,18 @@ enso <- df$time_stamp < as.POSIXct('2016-06-01 00:00:00',
                                    tz = 'Asia/Kuala_Lumpur')
 
 #### Import weather data from IPENANGP2 for precipitation (mm) ####
-weather <- read.csv('data/ipenangp2_weather_data.csv', header = TRUE)
+weather <- read.csv('data/ipenangp2_weather_data2.csv', header = TRUE)
 precip <- weather$HourlyPrecipMM
 date <- weather$Time
 date <- as.POSIXct(date, '%Y-%m-%d %H:%M:%S', tz = 'Asia/Kuala_Lumpur')
 rain <- data.frame(date,precip)
 rainHR <- timeAverage(rain, avg.time = '30 min', statistic = 'mean')
-rm(rain, rainHR, weather, precip,date)
 # Merge precipitation data with EC data
 df1 <- merge(df, rainHR, by.x = 'time_stamp', by.y = 'date')
 # Check if rain
 rain_index <- df1$precip > 0
 rain_index[is.na(rain_index)] <- FALSE
+rm(rain, rainHR, weather, precip,date)
 
 #### Temperature and relative humidity ####
 # Plot temperature, T [deg C]
@@ -123,7 +123,7 @@ rm(df_grp_sd,df_grp_mean)
 # Diurnal H
 plot(df_grp$hour,df_grp$H,lwd=2,type='l',ylab='H',xlab='Date')
 # Diurnal LE
-plot(df_grp$hour,df_grp$LE,lwd=2,type='l',,ylab='LE',xlab='Date')
+plot(df_grp$hour,df_grp$LE,lwd=2,type='l',ylab='LE',xlab='Date')
 # Diurnal CO2
 plot(df_grp$hour,df_grp$co2_flux,lwd=2,type='l',ylab='CO2 flux',xlab='Date')
 # Diurnal atmospheric stability
