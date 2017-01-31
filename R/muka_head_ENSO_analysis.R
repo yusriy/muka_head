@@ -27,6 +27,15 @@ indexLE <- (df$qc_LE==1 | df$qc_LE == 0) &
 indexH <- (df$qc_H==1 | df$qc_H == 0) & 
   df$wind_check_strict & rain_index != TRUE
 
+# For the current analysis, had to remove all data between rows 15857 to 16898
+df$RN_1_1_1[15857:16960] <- NA
+df$RG_1_1_1[15857:16960] <- NA
+df$TA_1_1_1[15857:16960] <- NA
+df$RH_1_1_1[15857:16960] <- NA
+df$TS_1_1_1[15857:16960] <- NA
+df$TS_2_1_1[15857:16960] <- NA
+df$TW_1_1_1[15858:16960] <- NA
+
 #### Diurnal grouping ####
 ### Preparation of data ###
 # Grouping into hours for all data
@@ -49,7 +58,8 @@ df_grp_mean <- df %>%
             TW1=mean(TS_1_1_1,na.rm=TRUE),
             TW2=mean(TS_2_1_1,na.rm=TRUE),
             TA=mean(TA_1_1_1,na.rm=TRUE),
-            RH=mean(RH_1_1_1,na.rm=TRUE))
+            RH=mean(RH_1_1_1,na.rm=TRUE),
+            TSW=mean(TW_1_1_1,na.rm=TRUE))
 df_grp_sd <- df %>%
   mutate(time_stamp=as.POSIXct(time_stamp)) %>%
   group_by(hour=format(as.POSIXlt(cut(time_stamp,breaks='hour')),'%H')) %>%
@@ -66,7 +76,8 @@ df_grp_sd <- df %>%
             TW1_sd=sd(TS_1_1_1,na.rm=TRUE),
             TW2_sd=sd(TS_2_1_1,na.rm=TRUE),
             TA_sd=sd(TA_1_1_1,na.rm=TRUE),
-            RH_sd=sd(RH_1_1_1,na.rm=TRUE))
+            RH_sd=sd(RH_1_1_1,na.rm=TRUE),
+            TSW_sd=sd(TW_1_1_1,na.rm=TRUE))
 # Merge the two dataframe
 df_grp <- merge(df_grp_mean,df_grp_sd,by='hour')
 rm(df_grp_sd,df_grp_mean)
@@ -139,9 +150,9 @@ t.test(df$RH_1_1_1[which(enso == TRUE)], df$RH_1_1_1[which(enso == FALSE)])
 
 # mean TS_1 during ENSO
 # Remove TS_1 > 50 
-TS1 <- df$TS_1_1_1
-TS1[which(TS1 > 38)] <- NA
-df$TS_1_1_1 <- TS1
+#TS1 <- df$TS_1_1_1
+#TS1[which(TS1 > 38)] <- NA
+#df$TS_1_1_1 <- TS1
 
 # mean TS_1 during ENSO
 mean(df$TS_1_1_1[which(enso == TRUE)], na.rm = TRUE)
@@ -185,13 +196,13 @@ plot(df$time_stamp[which(enso == FALSE)], df$precip[which(enso == FALSE)],
      type = 'l', ylim = c(0,40))
 
 # Some plots
-plot(df$time_stamp[which(index == TRUE & enso == TRUE)],
-     df$co2_flux[which(index == TRUE & enso == TRUE)], type = 'l',
+plot(df$time_stamp[which(indexCO2_5_enso == TRUE)],
+     df$co2_flux[which(indexCO2_5_enso == TRUE)], type = 'l',
      ylim = c(-10,10))
-plot(df$time_stamp[which(index == TRUE & enso == FALSE)], 
-      df$co2_flux[which(index == TRUE & enso == FALSE)], type = 'l',
+plot(df$time_stamp[which(indexCO2_5_xenso == TRUE)], 
+      df$co2_flux[which(indexCO2_5_xenso == TRUE)], type = 'l',
      col = 'red', ylim = c(-10,10))
-boxp1 <- boxplot(df$co2_flux[which(index == TRUE & enso == TRUE)])
+#boxp1 <- boxplot(df$co2_flux[which(index == TRUE & enso == TRUE)])
 
 
 
