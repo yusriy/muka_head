@@ -96,6 +96,9 @@ df$TA_1_1_1[which(df$TA_1_1_1 < 0 )] <- NA
 df$TS_1_1_1[which(df$TS_1_1_1 < 0 )] <- NA
 df$TS_2_1_1[which(df$TS_2_1_1 < 0 )] <- NA
 
+# Correct TW_1_1_1 values using calibration equation from Mei Thung's experiment
+df$TW_1_1_1 <- (df$TW_1_1_1 - 14.00) / 0.69
+
 # Convert RN_1_1_1 to accurate values by dividing by the sensor sensitivity
 # value of 13.6 uV/W m-2 but only for data before 2015-12-02 10:30:00
 df$RN_1_1_1[which(df$time_stamp < "2015-12-02 10:30:00")] <- 
@@ -178,7 +181,7 @@ ts2_sd <- numeric(nrow(df))
 # Mean of TS_2_1_1
 ts2_mean <- numeric(nrow(df))
 # Level of standard deviation
-level <- 3  # Just a very low bandwith filter to ensure that outside water
+level <- 0.5  # Just a very low bandwith filter to ensure that outside water
 # is removed
 ## Calculate standard deviation of T
 # To count number of days
@@ -198,6 +201,35 @@ for (i in 1:nrow(df)){
 # Remove all above water temperature readings by X level std. dev.
 df$TS_2_1_1[which(ts2 > ts2_mean + (level * ts2_sd))] <- NA 
 rm(i,j,level,temp_mean2,temp_sd2,ts2,ts2_mean,ts2_sd)
+
+#### Filter TW_1_1_1 values ####
+# Create temporary TW_1_1_1 value
+tw <- df$TW_1_1_1
+# Standard dev of TW_1_1_1
+tw2_sd <- numeric(nrow(df))
+# Mean of TW_1_1_1
+tw2_mean <- numeric(nrow(df))
+# Level of standard deviation
+level <- 20  # Just a very low bandwith filter to ensure that outside water
+# is removed
+## Calculate standard deviation of T
+# To count number of days
+j <- 1
+for (i in 1:nrow(df)){
+  if(df$day[i] == j){
+    tw2_sd[i] <- sd(df$TW_1_1_1[which(df$day==j)], na.rm = TRUE)
+    tw2_mean[i] <- mean(df$TW_1_1_1[which(df$day==j)], na.rm = TRUE)
+    temp_sd2 <- tw2_sd[i]
+    temp_mean2 <- tw2_mean[i]
+    j <- j + 1
+  } else {
+    tw2_sd[i] <- temp_sd2
+    tw2_mean[i] <- temp_mean2
+  }
+}
+# Remove all above water temperature readings by X level std. dev.
+df$TW_1_1_1[which(tw > tw2_mean + (level * tw2_sd))] <- NA 
+rm(i,j,level,temp_mean2,temp_sd2,tw,tw2_mean,tw2_sd)
 
 #### Filter RH_1_1_1 ambient RH ####
 # Improbable values of RH
@@ -263,7 +295,7 @@ hstor_sd <- numeric(nrow(df))
 hstor_mean <- numeric(nrow(df))
 
 # Level of standard deviation
-level <- 2 # A large bandwidth to ensure most of the data is not removed
+level <- 20 # A large bandwidth to ensure most of the data is not removed
 
 ## Calculate standard deviation of H_stor
 # To count number of days
