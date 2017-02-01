@@ -28,13 +28,18 @@ indexH <- (df$qc_H==1 | df$qc_H == 0) &
   df$wind_check_strict & rain_index != TRUE
 
 # For the current analysis, had to remove all data between rows 15857 to 16898
-df$RN_1_1_1[15857:16960] <- NA
-df$RG_1_1_1[15857:16960] <- NA
-df$TA_1_1_1[15857:16960] <- NA
-df$RH_1_1_1[15857:16960] <- NA
-df$TS_1_1_1[15857:16960] <- NA
-df$TS_2_1_1[15857:16960] <- NA
-df$TW_1_1_1[15858:16960] <- NA
+# df$RN_1_1_1[15857:16960] <- NA
+# df$RG_1_1_1[15857:16960] <- NA
+# df$TA_1_1_1[15857:16960] <- NA
+# df$RH_1_1_1[15857:16960] <- NA
+# df$TS_1_1_1[15857:16960] <- NA
+# df$TS_2_1_1[15857:16960] <- NA
+# df$TW_1_1_1[15858:16960] <- NA
+
+# Using df_20161023a remove a portion of TS_1_1_1 values
+df$TS_1_1_1[14850:14983] <- NA
+# Remove improbable wind values
+df$wind_speed[which(df$wind_speed > 5)] <- NA
 
 #### Diurnal grouping ####
 ### Preparation of data ###
@@ -248,7 +253,7 @@ axis(4, cex.axis = 1.5)
 #jpeg(file=path_fig,width=16,height=8,res=400, units = 'cm')
 #par(family='Times', oma=c(0.0001,0.0001,0.0001,0.0001))
 par(mai=c(0.05,0.6,0.05, 0.65))
-plot(df$time_stamp, ws, type = 'l', xlab = '', ylab = '', col = 'grey40',
+plot(df$time_stamp, df$wind_speed, type = 'l', xlab = '', ylab = '', col = 'grey40',
      xaxt = 'n', cex.axis = 1.5)
 minor.tick(ny = 1)
 # axis(side = 1, at = c(as.POSIXct('2015-12-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
