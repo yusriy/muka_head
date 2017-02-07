@@ -11,6 +11,28 @@ library(openair)
 library(Hmisc)
 library(dplyr)
 
+#### El-Nino-Southern Oscillation classification ####
+# Note: if before 2016-06-01 00:00:00 then ENSO and if not then non-ENSO
+
+enso <- df$time_stamp < as.POSIXct('2016-06-01 00:00:00', 
+                                   '%Y-%m-%d %H:%M:%S', 
+                                   tz = 'Asia/Kuala_Lumpur')
+
+#### Import weather data from IPENANGP2 for precipitation (mm) ####
+weather <- read.csv('data/ipenangp2_weather_data2.csv', header = TRUE)
+precip <- weather$HourlyPrecipMM
+date <- weather$Time
+date <- as.POSIXct(date, '%Y-%m-%d %H:%M:%S', tz = 'Asia/Kuala_Lumpur')
+rain <- data.frame(date,precip)
+rainHR <- timeAverage(rain, avg.time = '30 min', statistic = 'mean')
+# Merge precipitation data with EC data
+df$time_stamp<-as.POSIXct(df$time_stamp)
+df1 <- merge(df, rainHR, by.x = 'time_stamp', by.y = 'date')
+# Check if rain
+rain_index <- df1$precip > 0
+rain_index[is.na(rain_index)] <- FALSE
+rm(rain, rainHR, weather, precip,date)
+
 #### Indices for usable fluxes ####
 # An index for co2 of qc = 1, 2 and wind_check_strict = TRUE and rain_index 
 indexCO2 <- (df$qc_co2_flux==1 | df$qc_co2_flux == 0) & 
@@ -332,7 +354,7 @@ par(family='Times', mar = c(4.1, 4.1, 0.1, 0.1))
 plot(df$time_stamp[which(indexCO2_5 == TRUE)],
      df$co2_flux[which(indexCO2_5 == TRUE)], 
      xlab = '', ylab = '',
-     type = 'l', cex.axis = 1.2)
+     type = 'l', cex.axis = 1, yaxt = 'n')
 mtext(side = 1, 'Month', line = 2.5, cex = 1.5)
 mtext(side = 2, expression(paste('CO'['2'],' flux')), 
       line = 2.1, cex = 1.5)
@@ -348,8 +370,11 @@ axis(side = 1, at = c(as.POSIXct('2015-12-01 00:00:00', format = '%Y-%m-%d %H:%M
                       as.POSIXct('2016-04-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
                       as.POSIXct('2016-06-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
                       as.POSIXct('2016-08-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
-                      as.POSIXct('2016-10-01 00:00:00', format = '%Y-%m-%d %H:%M:%S')),
-     labels = c('Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct'), cex.axis = 1.2)
+                      as.POSIXct('2016-10-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
+                      as.POSIXct('2016-12-01 00:00:00', format = '%Y-%m-%d %H:%M:%S')),
+     labels = c('Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct','Dec'), cex.axis = 1)
+axis(side = 2, at = c(-4,-2,0,2,4), 
+     labels = c(paste('\u2212',4,sep=''),paste('\u2212',2,sep=''),0,2,4))
 minor.tick(nx = 1)
 dev.off()
 
@@ -418,12 +443,21 @@ dev.off()
 path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/Ucor.jpg')
 jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
 par(family='Times')
-par(mar = c(4.1,4.1,0.5, 0.5))
-plot(df$wind_speed[which(indexCO2_5 == TRUE)],
-     df$co2_flux[which(indexCO2_5 == TRUE)], pch = 19,
-     xlab = 'U', ylab = expression(paste('CO'['2'],' flux')),
-     xlim= c(0,3), ylim = c(-0.3,0.3), col = 'grey60')
-axis(side = 2, at = c(-0.2,0), labels = c(-0.2,0))
+par(mar = c(3.1,3.1,0.5, 0.5))
+plot(df$wind_speed[which(indexCO2_5_enso == TRUE)],
+     df$co2_flux[which(indexCO2_5_enso == TRUE)], pch = 16,
+     xlab = '', ylab = '',
+     xlim= c(0,4.5), ylim = c(-1,1), col = alpha('red',0.2),yaxt = 'n')
+# points(df$wind_speed[which(indexCO2_5_enso == TRUE)],
+#        df$co2_flux[which(indexCO2_5_enso == TRUE)], pch = 16,
+#        col = alpha('red',0.2))
+points(df$wind_speed[which(indexCO2_5_xenso == TRUE)],
+       df$co2_flux[which(indexCO2_5_xenso == TRUE)], pch = 16,
+       col = alpha('blue',0.2))
+axis(side = 2, at = c(-1,-0.5,0,0.5,1), 
+     labels = c(paste('\u2212',1,sep=''),paste('\u2212',0.5,sep=''),0,0.5,1))
+mtext(expression(paste('CO'['2'],' flux')),side = 2,line=2)
+mtext('U',side = 1,line=2)
 minor.tick()
 lmU <- lm(df$co2_flux[which(indexCO2_5 == TRUE)] ~ 
             df$wind_speed[which(indexCO2_5 == TRUE)])
@@ -431,9 +465,9 @@ lmUenso <- lm(df$co2_flux[which(indexCO2_5_enso == TRUE)] ~
                 df$wind_speed[which(indexCO2_5_enso == TRUE)])
 lmUxenso <- lm(df$co2_flux[which(indexCO2_5_xenso == TRUE)] ~ 
                  df$wind_speed[which(indexCO2_5_xenso == TRUE)])
-abline(lmU, col = 'green', lwd = 3, lty = 2)
 abline(lmUenso, col = 'red', lwd = 3, lty = 2)
 abline(lmUxenso, col = 'blue', lwd = 3, lty = 2)
+abline(lmU, col = 'black', lwd = 3, lty = 2)
 summary(lmU)
 summary(lmUenso)
 summary(lmUxenso)

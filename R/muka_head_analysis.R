@@ -39,6 +39,7 @@ date <- as.POSIXct(date, '%Y-%m-%d %H:%M:%S', tz = 'Asia/Kuala_Lumpur')
 rain <- data.frame(date,precip)
 rainHR <- timeAverage(rain, avg.time = '30 min', statistic = 'mean')
 # Merge precipitation data with EC data
+df$time_stamp<-as.POSIXct(df$time_stamp)
 df1 <- merge(df, rainHR, by.x = 'time_stamp', by.y = 'date')
 # Check if rain
 rain_index <- df1$precip > 0
