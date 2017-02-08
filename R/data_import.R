@@ -92,7 +92,7 @@ df$TS_1_1_1 <- df$TS_1_1_1 - 273.15
 df$TS_2_1_1 <- df$TS_2_1_1 - 273.15
 
 # Remove all improbable values of T
-df$TA_1_1_1[which(df$TA_1_1_1 < 0 )] <- NA
+df$TA_1_1_1[which(df$TA_1_1_1 < 0 | df$TA_1_1_1 > 100 )] <- NA
 df$TS_1_1_1[which(df$TS_1_1_1 < 0 )] <- NA
 df$TS_2_1_1[which(df$TS_2_1_1 < 0 )] <- NA
 
@@ -233,7 +233,65 @@ rm(i,j,level,temp_mean2,temp_sd2,tw,tw2_mean,tw2_sd)
 
 #### Filter RH_1_1_1 ambient RH ####
 # Improbable values of RH
-df$RH_1_1_1[which(df$RH_1_1_1 > 100 | df$RH_1_1_1 < 0)] <- NA
+df$RH_1_1_1[which(df$RH_1_1_1 > 100 | df$RH_1_1_1 < 50)] <- NA
+
+# Create temporary RH_1_1_1 value
+RH <- df$RH_1_1_1
+# Standard dev of TW_1_1_1
+RH2_sd <- numeric(nrow(df))
+# Mean of RH_1_1_1
+RH2_mean <- numeric(nrow(df))
+# Level of standard deviation
+level <- 10  # Just a very low bandwith filter to ensure that outside water
+# is removed
+## Calculate standard deviation of T
+# To count number of days
+j <- 1
+for (i in 1:nrow(df)){
+  if(df$day[i] == j){
+    RH2_sd[i] <- sd(df$RH_1_1_1[which(df$day==j)], na.rm = TRUE)
+    RH2_mean[i] <- mean(df$RH_1_1_1[which(df$day==j)], na.rm = TRUE)
+    temp_sd2 <- RH2_sd[i]
+    temp_mean2 <- RH2_mean[i]
+    j <- j + 1
+  } else {
+    RH2_sd[i] <- temp_sd2
+    RH2_mean[i] <- temp_mean2
+  }
+}
+# Remove all above water temperature readings by X level std. dev.
+df$RH_1_1_1[which(RH > RH2_mean + (level * RH2_sd))] <- NA 
+rm(i,j,level,temp_mean2,temp_sd2,RH,RH2_mean,RH2_sd)
+
+#### Filter TA_1_1_1 ambient RH ####
+
+# Create temporary TA_1_1_1 value
+TA <- df$TA_1_1_1
+# Standard dev of TA_1_1_1
+TA2_sd <- numeric(nrow(df))
+# Mean of RH_1_1_1
+TA2_mean <- numeric(nrow(df))
+# Level of standard deviation
+level <- 1  # Just a very low bandwith filter to ensure that outside water
+# is removed
+## Calculate standard deviation of T
+# To count number of days
+j <- 1
+for (i in 1:nrow(df)){
+  if(df$day[i] == j){
+    TA2_sd[i] <- sd(df$TA_1_1_1[which(df$day==j)], na.rm = TRUE)
+    TA2_mean[i] <- mean(df$TA_1_1_1[which(df$day==j)], na.rm = TRUE)
+    temp_sd2 <- TA2_sd[i]
+    temp_mean2 <- TA2_mean[i]
+    j <- j + 1
+  } else {
+    TA2_sd[i] <- temp_sd2
+    TA2_mean[i] <- temp_mean2
+  }
+}
+# Remove all above water temperature readings by X level std. dev.
+df$TA_1_1_1[which(TA > TA2_mean + (level * TA2_sd))] <- NA 
+rm(i,j,level,temp_mean2,temp_sd2,TA,TA2_mean,TA2_sd)
 
 #### Filter RN_1_1_1 ####
 df$RN_1_1_1[which(df$RN_1_1_1 > 1000)] <- NA

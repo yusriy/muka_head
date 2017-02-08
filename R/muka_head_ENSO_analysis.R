@@ -59,9 +59,13 @@ indexH <- (df$qc_H==1 | df$qc_H == 0) &
 # df$TW_1_1_1[15858:16960] <- NA
 
 # Using df_20161023a remove a portion of TS_1_1_1 values
-df$TS_1_1_1[14850:14983] <- NA
+# df$TS_1_1_1[14850:14983] <- NA
+
 # Remove improbable wind values
 df$wind_speed[which(df$wind_speed > 5)] <- NA
+
+#### Filter TA due to error ####
+df$TA_1_1_1[19057:19166] <- NA
 
 #### Diurnal grouping ####
 ### Preparation of data ###
