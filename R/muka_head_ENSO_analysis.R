@@ -18,6 +18,139 @@ enso <- df$time_stamp < as.POSIXct('2016-06-01 00:00:00',
                                    '%Y-%m-%d %H:%M:%S', 
                                    tz = 'Asia/Kuala_Lumpur')
 
+#### Month and year classification ####
+Month_class <- NA 
+for (i in 1:nrow(df)) {
+  if (df$time_stamp[i] < as.POSIXct('2015-11-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Nov2015'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2015-11-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2015-12-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Dec2015'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2015-12-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-01-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Jan2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-01-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-02-29 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Feb2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-02-29 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-03-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Mar2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-03-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-04-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Apr2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-04-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-05-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'May2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-05-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-06-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Jun2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-06-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-07-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Jul2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-07-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-08-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Aug2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-08-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-09-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Sep2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-09-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-10-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Oct2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-10-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-11-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Nov2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-11-30 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2016-12-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Dec2016'
+  }
+  if (df$time_stamp[i] > as.POSIXct('2016-12-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur') &
+      df$time_stamp[i] < as.POSIXct('2017-01-31 23:30:00',
+                                    '%Y-%m-%d %H:%M:%S',
+                                    tz = 'Asia/Kuala_Lumpur')){
+    Month_class[i] <- 'Jan2017'
+  }
+}
+Month_class <- as.factor(Month_class)
+
+df <- cbind(df,Month_class)
+df$Month_class <- factor(df$Month_class, levels = c('Nov2015', 'Dec2015',
+                                                    'Jan2016', 'Feb2016',
+                                                    'Mar2016', 'Apr2016',
+                                                    'May2016', 'Jun2016',
+                                                    'Jul2016', 'Aug2016',
+                                                    'Sep2016', 'Oct2016',
+                                                    'Nov2016', 'Dec2016',
+                                                    'Jan2017'))
+
 #### Import weather data from IPENANGP2 for precipitation (mm) ####
 weather <- read.csv('data/ipenangp2_weather_data2.csv', header = TRUE)
 precip <- weather$HourlyPrecipMM
@@ -66,6 +199,11 @@ df$wind_speed[which(df$wind_speed > 5)] <- NA
 
 #### Filter TA due to error ####
 df$TA_1_1_1[19057:19166] <- NA
+df$TS_2_1_1[19057:19200] <- NA
+
+df$TS_1_1_1[which(df$TS_1_1_1 > 40)] <- NA
+df$TS_1_1_1[19100:19155] <- NA
+df$TS_1_1_1[15000:15080] <- NA
 
 #### Diurnal grouping ####
 ### Preparation of data ###
@@ -76,7 +214,7 @@ df$TA_1_1_1[19057:19166] <- NA
 df_grp_mean <- df %>%
   mutate(time_stamp=as.POSIXct(time_stamp)) %>%
   group_by(hour=format(as.POSIXlt(cut(time_stamp,breaks='hour')),'%H')) %>%
-  summarise(co2_flux=mean(co2_flux[which(indexCO2 == TRUE)],na.rm=TRUE),
+  summarise(co2_flux=mean(co2_flux[which(indexCO2_5 == TRUE)],na.rm=TRUE),
             LE=mean(LE,na.rm=TRUE),
             H=mean(H,na.rm=TRUE),
             WS=mean(wind_speed,na.rm=TRUE),
@@ -94,7 +232,7 @@ df_grp_mean <- df %>%
 df_grp_sd <- df %>%
   mutate(time_stamp=as.POSIXct(time_stamp)) %>%
   group_by(hour=format(as.POSIXlt(cut(time_stamp,breaks='hour')),'%H')) %>%
-  summarise(co2_flux_sd=sd(co2_flux[which(indexCO2 == TRUE)],na.rm=TRUE),
+  summarise(co2_flux_sd=sd(co2_flux[which(indexCO2_5 == TRUE)],na.rm=TRUE),
             LE_sd=sd(LE,na.rm=TRUE),
             H_sd=sd(H,na.rm=TRUE),
             WS_sd=sd(wind_speed,na.rm=TRUE),
@@ -111,6 +249,54 @@ df_grp_sd <- df %>%
             TSW_sd=sd(TW_1_1_1,na.rm=TRUE))
 # Merge the two dataframe
 df_grp <- merge(df_grp_mean,df_grp_sd,by='hour')
+rm(df_grp_sd,df_grp_mean)
+
+#### Monthly grouping ####
+### Preparation of data ###
+# Grouping into months for all data
+# Note: since the update have to create separate groups for mean and sd.
+# Need to create another dataframe that only contains usable flux
+
+df_grp_mean <- df %>%
+  mutate(time_stamp=as.POSIXct(time_stamp)) %>%
+  group_by(year=format(as.POSIXlt(cut(time_stamp,breaks='year')),'%Y'),
+           month=format(as.POSIXlt(cut(time_stamp,breaks='month')),'%m')) %>%
+  summarise(co2_flux=mean(co2_flux[which(indexCO2_5 == TRUE)],na.rm=TRUE),
+            LE=mean(LE,na.rm=TRUE),
+            H=mean(H,na.rm=TRUE),
+            WS=mean(wind_speed,na.rm=TRUE),
+            WD=mean(wind_dir,na.rm=TRUE),
+            zL=mean(Z.L,na.rm=TRUE),
+            H_stor=mean(H_stor,na.rm=TRUE),
+            H_stor_filter=mean(H_stor_filter,na.rm=TRUE),
+            RG=mean(RG_1_1_1,na.rm=TRUE),
+            RN=mean(RN_1_1_1,na.rm=TRUE),
+            TW1=mean(TS_1_1_1,na.rm=TRUE),
+            TW2=mean(TS_2_1_1,na.rm=TRUE),
+            TA=mean(TA_1_1_1,na.rm=TRUE),
+            RH=mean(RH_1_1_1,na.rm=TRUE),
+            TSW=mean(TW_1_1_1,na.rm=TRUE))
+df_grp_sd <- df %>%
+  mutate(time_stamp=as.POSIXct(time_stamp)) %>%
+  group_by(year=format(as.POSIXlt(cut(time_stamp,breaks='year')),'%Y'),
+           month=format(as.POSIXlt(cut(time_stamp,breaks='month')),'%m')) %>%
+  summarise(co2_flux_sd=sd(co2_flux[which(indexCO2_5 == TRUE)],na.rm=TRUE),
+            LE_sd=sd(LE,na.rm=TRUE),
+            H_sd=sd(H,na.rm=TRUE),
+            WS_sd=sd(wind_speed,na.rm=TRUE),
+            WD_sd=sd(wind_dir,na.rm=TRUE),
+            zL_sd=sd(Z.L,na.rm=TRUE),
+            H_stor_sd=sd(H_stor,na.rm=TRUE),
+            H_stor_filter_sd=sd(H_stor_filter,na.rm=TRUE),
+            RG_sd=sd(RG_1_1_1,na.rm=TRUE),
+            RN_sd=sd(RN_1_1_1,na.rm=TRUE),
+            TW1_sd=sd(TS_1_1_1,na.rm=TRUE),
+            TW2_sd=sd(TS_2_1_1,na.rm=TRUE),
+            TA_sd=sd(TA_1_1_1,na.rm=TRUE),
+            RH_sd=sd(RH_1_1_1,na.rm=TRUE),
+            TSW_sd=sd(TW_1_1_1,na.rm=TRUE))
+# Merge the two dataframe
+df_grp_month <- merge(df_grp_mean,df_grp_sd,by=c('year','month'))
 rm(df_grp_sd,df_grp_mean)
 
 
@@ -306,11 +492,11 @@ par(mai=c(0.05,0.6,0.05, 0.65))
 #minor.tick(nx = 1)
 #par(new = TRUE)
 plot(df$time_stamp, df$TS_1_1_1, type = 'l',
-     col = 'darkgreen', ylab = '', xlab = '', ylim = c(27, 34),
+     col = 'darkgreen', ylab = '', xlab = '', ylim = c(26, 34),
      cex.axis = 1.5)
-text(as.POSIXct('2016-03-15 00:00:00', format = '%Y-%m-%d %H:%M:%S'), 27.5,
+text(as.POSIXct('2016-03-15 00:00:00', format = '%Y-%m-%d %H:%M:%S'), 26.5,
      'ENSO', cex = 1.5)
-text(as.POSIXct('2016-08-15 00:00:00', format = '%Y-%m-%d %H:%M:%S'), 27.5,
+text(as.POSIXct('2016-08-15 00:00:00', format = '%Y-%m-%d %H:%M:%S'), 26.5,
      'non-ENSO', cex = 1.5)
 
 mtext(side = 2, expression('T'['S']), line = 2.5, cex = 1.1) 
@@ -320,8 +506,9 @@ axis(side = 1, at = c(as.POSIXct('2015-12-01 00:00:00', format = '%Y-%m-%d %H:%M
                       as.POSIXct('2016-04-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
                       as.POSIXct('2016-06-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
                       as.POSIXct('2016-08-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
-                      as.POSIXct('2016-10-01 00:00:00', format = '%Y-%m-%d %H:%M:%S')),
-     labels = c('Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct'), cex.axis = 1.5)
+                      as.POSIXct('2016-10-01 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
+                      as.POSIXct('2016-12-01 00:00:00', format = '%Y-%m-%d %H:%M:%S')),
+     labels = c('Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct','Dec'), cex.axis = 1.5)
 #legend(as.POSIXct('2015-10-26 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
 #       69, bty = 'n', lwd = 2, col = 'red', text.col = 'red',
 #       legend = expression('T'['WS']), cex = 1.5)
@@ -335,7 +522,7 @@ legend(as.POSIXct('2016-01-5 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
 #mtext(side = 4, expression('T'['S']), line = 2.7, cex = 1.1)
 par(new = TRUE)
 plot(df$time_stamp, df$TS_2_1_1, type = 'l',
-     col = 'blue', ylab = '', xlab = '', ylim = c(27,34), 
+     col = 'blue', ylab = '', xlab = '', ylim = c(26,34), 
      axes = FALSE)
 lines(c(as.POSIXct('2016-05-31 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
         as.POSIXct('2016-05-31 00:00:00', format = '%Y-%m-%d %H:%M:%S')),
@@ -390,10 +577,14 @@ par(mar = c(2.1,4.1,0.1, 0.1))
 boxplot(df$co2_flux[which(indexCO2_5_enso == TRUE)],
         df$co2_flux[which(indexCO2_5_xenso == TRUE)], outline = FALSE,
         names = c('ENSO','non-ENSO'), 
-        ylab = '', cex.lab = 1.2, 
+        ylab = '', cex.lab = 1.2, yaxt = 'n',
         cex.axis = 1.2, ylim = c(-0.5,0.5))
 mtext(side = 2, expression(paste('CO'['2'],' flux')), 
       line = 2.1, cex = 1.2)
+axis(side = 2, at = c(-0.4,-0.2,0,0.2,0.4),
+     labels = c(paste('\u2212',0.4,sep=''),
+                paste('\u2212',0.2,sep=''),
+                0,0.2,0.4))
 dev.off()
 
 
@@ -402,7 +593,7 @@ path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/
 jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
 par(family='Times')
 par(mar = c(3.1,3.4,0.1, 0.1))
-plot(df_grp$hour, df_grp$co2_flux, type = 'l', ylim = c(-2.5,2.5), xlim = c(-1,25),
+plot(df_grp$hour, df_grp$co2_flux, type = 'l', ylim = c(-1,1.5), xlim = c(-1,25),
      xlab = '', ylab = '', xaxt = 'n')
 mtext(side = 1, 'Hour (local time)', line = 2.1, cex = 1.2)
 mtext(side = 2, expression(paste('CO'['2'],' flux')), 
@@ -419,35 +610,41 @@ dev.off()
 
 #### Correlational analysis and plots between CO2 and physical drivers ####
 # Sea surface temperature
-path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/SSTcor.jpg')
-jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
-par(family='Times')
-par(mar = c(4.1,4.1,0.5, 0.5))
-plot(df$TS_1_1_1[which(indexCO2_5 == TRUE)],
-     df$co2_flux[which(indexCO2_5 == TRUE)], pch = 19,
-     xlab = expression('T'['S']), ylab = expression(paste('CO'['2'],' flux')),
-     xlim= c(28,31), ylim = c(-0.3,0.3), col = 'grey60')
-axis(side = 2, at = c(-0.2,0), labels = c(-0.2,0))
+path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/SSTandUcor.jpg')
+jpeg(file=path_fig,width=16,height=8,res=400, units = 'cm')
+par(family='Times', mfrow = c(1,2))
+par(mar = c(3,3,0.5,0))
+plot(df$TS_1_1_1[which(indexCO2_5_enso == TRUE)],
+     df$co2_flux[which(indexCO2_5_enso == TRUE)], pch = 16,
+     xlab = '', ylab = '',
+     xlim= c(26,32), ylim = c(-1,1), col = alpha('red',0.2), yaxt = 'n')
+points(df$TS_1_1_1[which(indexCO2_5_xenso == TRUE)],
+       df$co2_flux[which(indexCO2_5_xenso == TRUE)], pch = 16,
+       col = alpha('blue',0.2))
+axis(side = 2, at = c(-1,-0.5,0,0.5,1), 
+     labels = c(paste('\u2212',1,sep=''),paste('\u2212',0.5,sep=''),0,0.5,1))
 minor.tick()
+mtext(expression(paste('CO'['2'],' flux')),side = 2,line=2)
+mtext(expression('T'['S']),side = 1,line=2)
 lmT <- lm(df$co2_flux[which(indexCO2_5 == TRUE)] ~ 
             df$TS_1_1_1[which(indexCO2_5 == TRUE)])
 lmTenso <- lm(df$co2_flux[which(indexCO2_5_enso == TRUE)] ~ 
             df$TS_1_1_1[which(indexCO2_5_enso == TRUE)])
 lmTxenso <- lm(df$co2_flux[which(indexCO2_5_xenso == TRUE)] ~ 
                 df$TS_1_1_1[which(indexCO2_5_xenso == TRUE)])
-abline(lmT, col = 'green', lwd = 3, lty = 2)
 abline(lmTenso, col = 'red', lwd = 3, lty = 2)
 abline(lmTxenso, col = 'blue', lwd = 3, lty = 2)
+abline(lmT, col = 'black', lwd = 3, lty = 2)
 summary(lmT)
 summary(lmTenso)
 summary(lmTxenso)
-dev.off()
+
 
 # Wind speed
-path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/Ucor.jpg')
-jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
-par(family='Times')
-par(mar = c(3.1,3.1,0.5, 0.5))
+# path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/Ucor.jpg')
+# jpeg(file=path_fig,width=8,height=8,res=400, units = 'cm')
+# par(family='Times')
+par(mar = c(3,2.5,0.5,0.5))
 plot(df$wind_speed[which(indexCO2_5_enso == TRUE)],
      df$co2_flux[which(indexCO2_5_enso == TRUE)], pch = 16,
      xlab = '', ylab = '',
@@ -460,7 +657,7 @@ points(df$wind_speed[which(indexCO2_5_xenso == TRUE)],
        col = alpha('blue',0.2))
 axis(side = 2, at = c(-1,-0.5,0,0.5,1), 
      labels = c(paste('\u2212',1,sep=''),paste('\u2212',0.5,sep=''),0,0.5,1))
-mtext(expression(paste('CO'['2'],' flux')),side = 2,line=2)
+#mtext(expression(paste('CO'['2'],' flux')),side = 2,line=2)
 mtext('U',side = 1,line=2)
 minor.tick()
 lmU <- lm(df$co2_flux[which(indexCO2_5 == TRUE)] ~ 
@@ -485,7 +682,7 @@ par(mar = c(4.1,4.1,0.5, 0.5))
 plot(df$RN_1_1_1[which(indexCO2_5 == TRUE)],
      df$co2_flux[which(indexCO2_5 == TRUE)], pch = 19,
      xlab = 'RN', ylab = expression(paste('CO'['2'],' flux')),
-     xlim= c(-100,300), ylim = c(-0.3,0.3), col = 'grey60')
+     xlim= c(-100,300), ylim = c(-1,1), col = 'grey60')
 axis(side = 2, at = c(-0.2,0), labels = c(-0.2,0))
 minor.tick()
 lmRN <- lm(df$co2_flux[which(indexCO2_5 == TRUE)] ~ 
@@ -536,3 +733,26 @@ plot(df$time_stamp, df$RN_1_1_1, type = 'l',
      col = 'orange')
 dev.off()
 
+#### Monthly boxplots of CO2 fluxes ####
+path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/co2_box.jpg')
+jpeg(file=path_fig,width=16,height=8,res=400, units = 'cm')
+par(family='Times', mar = c(4.1, 4.1, 0.1, 0.1))
+boxplot(df$co2_flux[indexCO2_5] ~ df$Month_class[indexCO2_5], 
+        outline = F, yaxt = 'n',names = c('','Dec', '2016','Feb','',
+                               'Apr','','Jun','','Aug','',
+                               'Oct','','Dec','2017'))
+axis(side = 1, at = c(3,15), labels = c('2016','2017'))
+axis(side = 2, at = c(-0.4,-0.2,0,0.2,0.4), 
+     labels = c(paste('\u2212',0.4,sep=''),paste('\u2212',0.2,sep=''),0,0.2,0.4))
+mtext(side = 1, 'Month', line = 2.5, cex = 1.5)
+mtext(side = 2, expression(paste('CO'['2'],' flux')), 
+      line = 2.1, cex = 1.5)
+lines(c(8,8),c(-1,1), lwd = 3, lty = 2)
+minor.tick(nx=0)
+dev.off()
+
+boxplot(df$TS_2_1_1 ~ df$Month_class)
+boxplot(df$wind_speed ~ df$Month_class)
+
+boxplot(df$precip~df$Month_class, outline = F)
+lines(c(8,8),c(-1,12), lwd = 3, lty = 2)
