@@ -753,6 +753,19 @@ dev.off()
 
 boxplot(df$TS_2_1_1 ~ df$Month_class)
 boxplot(df$wind_speed ~ df$Month_class)
+boxplot(df$u.[indexCO2_5] ~ df$Month_class[indexCO2_5])
 
 boxplot(df$precip~df$Month_class, outline = F)
 lines(c(8,8),c(-1,12), lwd = 3, lty = 2)
+
+#### Correlational analysis of monthly averages ####
+plot(df_grp_month$TW2, df_grp_month$co2_flux,pch=19)
+lm_co2_ts_month <- lm(df_grp_month$co2_flux ~ df_grp_month$TW2)
+summary(lm_co2_ts_month)
+
+plot(df_grp_month$WS, df_grp_month$co2_flux, pch =19)
+lm_co2_U_month <- lm(df_grp_month$co2_flux ~ df_grp_month$WS)
+summary(lm_co2_U_month)
+
+
+
