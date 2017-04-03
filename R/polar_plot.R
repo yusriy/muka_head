@@ -1,5 +1,6 @@
 library(plotrix)
 library(colorspace)
+library(marmap)
 
 
 ## Manage data
@@ -21,12 +22,14 @@ wd_polar_rad <- wd_polar * 2 * pi / 360
 # Remove NA's
 co2_polar <- na.omit(co2_polar)
 # Color code CO2 flux
+# ii <- cut(co2_polar, breaks = seq(min(co2_polar), max(co2_polar),
+#                                   len = 6),include.lowest = TRUE)
 ii <- cut(co2_polar, breaks = seq(min(co2_polar), max(co2_polar),
-                                  len = 6),include.lowest = TRUE)
+                                  by = 1))
 # Use bin indices, ii, to select color from vector of n-1 equally 
 # spaced colors
 colors <- colorRampPalette(c("lightgreen", "darkorange"),
-                           alpha=0.5)(5)[ii]
+                           alpha=0.2)(7)[ii]
 
 # Change polar to long lat coordinates
 x <- ((x_90_polar*1000/110815) * sin(wd_polar_rad)) + 100.2025
@@ -57,13 +60,16 @@ points(100.2025,5.49, pch = 19, col = 'black', cex = 1)
 scaleBathy(bath_ppinang, deg = 0.045, x = "bottomright", inset = 5, 
            cex = 0.8)
 legend('topleft', 
-       legend = c(paste('[','\u2212','4,','\u2212','2))',sep=''),
-                  paste('[','\u2212','2,','\u2212','0.5))',sep=''),
-                  paste('[','\u2212','0.5,','\u2212','1.5))',sep=''),
-                  '(1.5,3]',
-                  '(3,5]'),
-       pch = c(19,19,19,19,19), 
-       col = c(levels(as.factor(colors))),cex = 0.7)
+       legend = c(paste('[','\u2212','4,','\u2212','3)',sep=''),
+                  paste('[','\u2212','3,','\u2212','2)',sep=''),
+                  paste('[','\u2212','2,','\u2212','1)',sep=''),
+                  paste('[','\u2212','1',', 0)',sep=''),
+                  '(0, 1]',
+                  '(1, 2]',
+                  '(2, 3]',
+                  '(3, 4]'),
+       pch = c(19,19,19,19,19,19,19,19,19,19), 
+       col = c(levels(as.factor(colors))),cex = 0.6)
 dev.off()
 
 
