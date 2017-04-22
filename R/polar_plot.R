@@ -54,7 +54,7 @@ mtext(side = 2, 'Latitude', line = 2)
 plot(bath_ppinang, deep = 0, shallow = 0, step = 0,
      lwd = 0.4, add = TRUE)
 
-points(x, y, pch = 19, col = colors, cex = 1)
+points(x, y, pch = 19, col = colors, cex = 0.4)
 # Station location
 points(100.2025,5.49, pch = 19, col = 'black', cex = 1)
 scaleBathy(bath_ppinang, deg = 0.045, x = "bottomright", inset = 5, 
@@ -66,9 +66,8 @@ legend('topleft',
                   paste('[','\u2212','1',', 0)',sep=''),
                   '(0, 1]',
                   '(1, 2]',
-                  '(2, 3]',
-                  '(3, 4]'),
-       pch = c(19,19,19,19,19,19,19,19,19,19), 
+                  '(2, 3]'),
+       pch = c(19,19,19,19,19,19,19,19,19), 
        col = c(levels(as.factor(colors))),cex = 0.6)
 dev.off()
 

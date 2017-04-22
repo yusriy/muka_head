@@ -758,6 +758,24 @@ boxplot(df$u.[indexCO2_5] ~ df$Month_class[indexCO2_5])
 boxplot(df$precip~df$Month_class, outline = F)
 lines(c(8,8),c(-1,12), lwd = 3, lty = 2)
 
+
+#### Monthly boxplots of U fluxes ####
+path_fig <- file.path('/Users/Yusri/Documents/Work/Data_analysis/muka_head/figs/U_box.jpg')
+jpeg(file=path_fig,width=16,height=8,res=400, units = 'cm')
+par(family='Times', mar = c(4.1, 4.1, 0.1, 0.1))
+boxplot(df$wind_speed[indexCO2_5] ~ df$Month_class[indexCO2_5], 
+        outline = F, names = c('','Dec', '2016','Feb','',
+                                          'Apr','','Jun','','Aug','',
+                                          'Oct','','Dec','2017'))
+axis(side = 1, at = c(3,15), labels = c('2016','2017'))
+mtext(side = 2, 'U', 
+      line = 2.1, cex = 1.5)
+lines(c(8,8),c(-1,5), lwd = 3, lty = 2)
+minor.tick(nx=0)
+dev.off()
+
+
+
 #### Correlational analysis of monthly averages ####
 plot(df_grp_month$TW2, df_grp_month$co2_flux,pch=19)
 lm_co2_ts_month <- lm(df_grp_month$co2_flux ~ df_grp_month$TW2)
@@ -767,5 +785,23 @@ plot(df_grp_month$WS, df_grp_month$co2_flux, pch =19)
 lm_co2_U_month <- lm(df_grp_month$co2_flux ~ df_grp_month$WS)
 summary(lm_co2_U_month)
 
+#### Fitting U to CO2 flux ####
 
+co2fluxfit <- df$co2_flux[indexCO2_5]
+Ufit <- df$wind_speed[indexCO2_5]
 
+# Convert to natural log scale to fit
+ln_co2 <- log(co2fluxfit)
+ln_u <- log(Ufit)
+
+# Plot using ln scale
+plot(ln_u,ln_co2)
+lm_fit <- lm(ln_co2 ~ Ufit)
+summary(lm_fit)
+abline(lm_fit, col ='red', lwd = 2)
+
+# Plot the fit using normal scale
+plot(Ufit, co2fluxfit, pch = 19)
+xfit <- seq(0,5,0.1)
+yfit <- (17.3/10000) * xfit^-0.19
+lines(xfit, yfit, col = 'red')

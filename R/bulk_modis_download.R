@@ -17,9 +17,9 @@ setwd("/Users/Yusri/Documents/Work/Data_analysis/muka_head")
 type <- 'L3m_DAY_SST_sst_4km.nc' ## CHANGE HERE
 
 # generate names
-year <- '2016' #################### CHANGE HERE
+year <- '2017' #################### CHANGE HERE
 start_day <- 1 ################## CHANGE HERE
-end_day <- 365
+end_day <- 18
 day <- seq(from = start_day,to = end_day)
 day1 <- 0
 for (i in 1:length(day)){
