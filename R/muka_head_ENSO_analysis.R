@@ -10,6 +10,7 @@
 library(openair)
 library(Hmisc)
 library(dplyr)
+source('R/tools/vap_pres_Buck.R')
 
 #### El-Nino-Southern Oscillation classification ####
 # Note: if before 2016-06-01 00:00:00 then ENSO and if not then non-ENSO
@@ -17,6 +18,12 @@ library(dplyr)
 enso <- df$time_stamp < as.POSIXct('2016-06-01 00:00:00', 
                                    '%Y-%m-%d %H:%M:%S', 
                                    tz = 'Asia/Kuala_Lumpur')
+#### Calculate ea #####
+
+ea <- vap_pres_Buck(df$TA_1_1_1, df$RH_1_1_1/100)/10
+# Remove bad maximum ea
+ea[which.max(ea)] <- NA
+df <- cbind(df,ea)
 
 #### Month and year classification ####
 Month_class <- NA 
@@ -358,11 +365,11 @@ mean(df$TA_1_1_1[which(enso == TRUE)], na.rm = TRUE)
 mean(df$TA_1_1_1[which(enso == FALSE)], na.rm = TRUE)
 t.test(df$TA_1_1_1[which(enso == TRUE)],df$TA_1_1_1[which(enso == FALSE)])
 
-# mean RH during ENSO
-mean(df$RH_1_1_1[which(enso == TRUE)], na.rm = TRUE)
-# mean RH after ENSO
-mean(df$RH_1_1_1[which(enso == FALSE)], na.rm = TRUE)
-t.test(df$RH_1_1_1[which(enso == TRUE)], df$RH_1_1_1[which(enso == FALSE)])
+# mean ea during ENSO
+mean(df$ea[which(enso == TRUE)], na.rm = TRUE)
+# mean ea after ENSO
+mean(df$ea[which(enso == FALSE)], na.rm = TRUE)
+t.test(df$ea[which(enso == TRUE)], df$ea[which(enso == FALSE)])
 
 
 # mean TS_1 during ENSO
@@ -442,16 +449,16 @@ minor.tick(ny = 1)
 #                       as.POSIXct('2016-10-01 00:00:00', format = '%Y-%m-%d %H:%M:%S')),
 #      labels = c('Dec', 'Feb', 'Apr', 'Jun', 'Aug', 'Oct'))
 mtext(side = 2, expression('T'['A']), line = 2.5, cex = 1.1)
-mtext(side = 4, 'RH', line = 2.7, cex = 1.1)
+mtext(side = 4, expression('e'['a']), line = 2.7, cex = 1.1)
 legend(as.POSIXct('2015-10-30 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
        24, bty = 'n', lwd = 2, col = 'red', text.col = 'red',
        legend = expression('T'['A']), cex = 1.5)
 legend(as.POSIXct('2016-01-15 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
        24, bty = 'n', lwd = 2, col = 'blue', text.col = 'blue',
-       legend = 'RH', cex = 1.5)
+       legend = expression('e'['a']), cex = 1.5)
 par(new = TRUE)
-plot(df$time_stamp, df$RH_1_1_1, type = 'l',
-     axes = FALSE, xlab = '', ylab = '', col = 'blue', ylim = c(20,100))
+plot(df$time_stamp, df$ea, type = 'l',
+     axes = FALSE, xlab = '', ylab = '', col = 'blue', ylim = c(1.5,3.7))
 lines(c(as.POSIXct('2016-05-31 00:00:00', format = '%Y-%m-%d %H:%M:%S'),
         as.POSIXct('2016-05-31 00:00:00', format = '%Y-%m-%d %H:%M:%S')),
       c(0,120), lwd = 3, lty = 2)
