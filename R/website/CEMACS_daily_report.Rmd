@@ -129,7 +129,7 @@ Global radiation (RG) is red and net radiation (RN) is orange.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
 plot(df_web$time_stamp, df_web$RG_1_1_1, type ='o', pch = 19, xlab = '',
-     ylab = '', col = 'red')
+     ylab = '', col = 'red',ylim=c(-200,1000))
 lines(df_web$time_stamp, df_web$RN_1_1_1, type = 'o', pch = 19, col = 'orange')
 mtext(side = 1, 'Time', line = 2)
 mtext(side = 2, expression(paste('RG and RN ', '(W m'^'-2',')')), 

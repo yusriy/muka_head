@@ -17,10 +17,10 @@
 # since analysis 2017-05-21
 
 #### 1. Preliminaries #########################################
-source('~/Documents/Work/Data_analysis/muka_head/R/tools/tool_convert_magic.R')
-source('~/Documents/Work/Data_analysis/muka_head/R/tools/tool_charactersNumeric.R')
-source('~/Documents/Work/Data_analysis/muka_head/R/tools/trapezium_intg_3.R')
-source('~/Documents/Work/Data_analysis/muka_head/R/tools/trapezium_intg_2.R')
+source('/home/eddy_cov/Documents/muka_head/R/tools/tool_convert_magic.R')
+source('/home/eddy_cov/Documents/muka_head/R/tools/tool_charactersNumeric.R')
+source('/home/eddy_cov/Documents/muka_head/R/tools/trapezium_intg_3.R')
+source('/home/eddy_cov/Documents/muka_head/R/tools/trapezium_intg_2.R')
 
 #### 2. Importing and processing the data #####################
 # NOTE only works for the server atmosfera.usm.my 
