@@ -1,0 +1,137 @@
+---
+title: "CEMACS Experiment Daily Report"
+author: "Yusri Yusup, PhD"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Air-sea flux exchanges and weather parameters
+Date: `r Sys.Date()`
+
+This page shows the previous day half-hourly 24-hour measurements of carbon dioxide flux, latent and sensible heat fluxes and other weather parameters from the CEMACS eddy covariance station. Data is from 18:00 to 17:30.
+
+
+```{r , echo = FALSE, include = FALSE}
+source('data_import_web.R') # Using a modified version of data_import.R
+```
+
+
+## Carbon dioxide flux (CO~2~ flux)
+This plots shows the vertical movement or fluxes of carbon dioxide (CO~2~) from the water and land surfaces surrounding the station.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$co2_flux, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'orange')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('CO'['2'],' flux (', mu,'g m'^'-2', ' s'^'-1',')')), 
+      line = 2)
+```
+
+
+## Latent heat (LE)
+This plots shows the vertical movement of moisutre or latent heat (LE) from the water and land surfaces surrounding the station.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$LE, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'blue')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('LE ', '(W m'^'-2',')')), 
+      line = 2)
+```
+
+
+## Sensible heat (H)
+This plots shows the vertical movement or fluxes of dry heat or sensible heat (H) from the water and land surfaces surrounding the station.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$H, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'red')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('H ', '(W m'^'-2',')')), 
+      line = 2)
+```
+
+## Wind Speed (WS)
+Wind speed for 24 hours.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$wind_speed, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'black')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('WS ', '(m ', 's'^'-1',')')), 
+      line = 2)
+```
+
+## Wind Direction (WS)
+Wind direction for 24 hours.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$wind_dir, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'black')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('WD ', '(', degree, ')')), 
+      line = 2)
+```
+
+
+## Atmospheric temperature (T)
+Atmospheric temperature for 24 hours.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$TA_1_1_1, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'black')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('T (', degree,'C)')), 
+      line = 2)
+```
+
+## Relative Humidity (RH)
+Relative humidity for 24 hours.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$RH_1_1_1, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'black')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('RH (%)')), 
+      line = 2)
+```
+
+## Underwater temperature (T) near the water surface
+Underwater temperature (T) in degree celsius near the surface of the water.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$TS_1_1_1, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'darkblue')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('T (', degree,'C)')), 
+      line = 2)
+```
+
+## Underwater temperature (T) near the seabed
+Underwater temperature (T) in degree celsius near the seabed.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$TS_2_1_1, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'darkblue')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('T (', degree,'C)')), 
+      line = 2)
+```
+
+## Global and net radiation 
+Global radiation (RG) is red and net radiation (RN) is orange.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$RG_1_1_1, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'red')
+lines(df_web$time_stamp, df_web$RN_1_1_1, type = 'o', pch = 19, col = 'orange')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('RG and RN ', '(W m'^'-2',')')), 
+      line = 2)
+```
