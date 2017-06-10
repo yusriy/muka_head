@@ -11,10 +11,10 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Air-sea flux exchanges and weather parameters
+## Air-sea flux exchanges and weather
 Date: `r Sys.Date()`
 
-This page shows the previous day half-hourly 24-hour measurements of carbon dioxide flux, latent and sensible heat fluxes and other weather parameters from the CEMACS eddy covariance station. Data is from 18:00 to 17:30.
+This page shows the previous day half-hourly 24-hour measurements of carbon dioxide flux, latent and sensible heat fluxes and other weather parameters from the CEMACS eddy covariance station. Data is from 18:00 to 17:30, the following day.
 
 
 ```{r , echo = FALSE, include = FALSE}
@@ -35,7 +35,7 @@ mtext(side = 2, expression(paste('CO'['2'],' flux (', mu,'g m'^'-2', ' s'^'-1','
 
 
 ## Latent heat (LE)
-This plots shows the vertical movement of moisutre or latent heat (LE) from the water and land surfaces surrounding the station.
+This plots shows the vertical movement of moisture or latent heat (LE) from the water and land surfaces surrounding the station.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
 plot(df_web$time_stamp, df_web$LE, type ='o', pch = 19, xlab = '',
@@ -69,7 +69,7 @@ mtext(side = 2, expression(paste('WS ', '(m ', 's'^'-1',')')),
 ```
 
 ## Wind Direction (WS)
-Wind direction for 24 hours.
+Wind direction for 24 hours. Zero degrees is North and moving clockwise, 90 degrees is east.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
 plot(df_web$time_stamp, df_web$wind_dir, type ='o', pch = 19, xlab = '',
@@ -85,7 +85,7 @@ Atmospheric temperature for 24 hours.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
 plot(df_web$time_stamp, df_web$TA_1_1_1, type ='o', pch = 19, xlab = '',
-     ylab = '', col = 'black')
+     ylab = '', col = 'black', ylim = c(20,40))
 mtext(side = 1, 'Time', line = 2)
 mtext(side = 2, expression(paste('T (', degree,'C)')), 
       line = 2)
@@ -102,7 +102,7 @@ mtext(side = 2, expression(paste('RH (%)')),
       line = 2)
 ```
 
-## Underwater temperature (T) near the water surface
+## Underwater temperature (T) 1
 Underwater temperature (T) in degree celsius near the surface of the water.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
@@ -113,7 +113,7 @@ mtext(side = 2, expression(paste('T (', degree,'C)')),
       line = 2)
 ```
 
-## Underwater temperature (T) near the seabed
+## Underwater temperature (T) 2
 Underwater temperature (T) in degree celsius near the seabed.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
