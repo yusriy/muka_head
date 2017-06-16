@@ -15,7 +15,7 @@
 # divided by 13.6, corrections were made for data after this date.
 # 2. Before the infrared sensor was TW_1_1_1, now it is TW_0_0_1
 # since analysis 2017-05-21
-
+# 3. Changed from TW_0_0_1 back to TW_1_1_1 since 2017-06-17
 #### 1. Preliminaries #########################################
 source('R/tools/tool_convert_magic.R')
 source('R/tools/tool_charactersNumeric.R')
@@ -98,8 +98,8 @@ df$TA_1_1_1[which(df$TA_1_1_1 < 0 | df$TA_1_1_1 > 100 )] <- NA
 df$TS_1_1_1[which(df$TS_1_1_1 < 0 )] <- NA
 df$TS_2_1_1[which(df$TS_2_1_1 < 0 )] <- NA
 
-# Correct TW_0_0_1 values using calibration equation from Mei Thung's experiment
-df$TW_0_0_1 <- (df$TW_0_0_1 - 14.00) / 0.69
+# Correct TW_1_1_1 values using calibration equation from Mei Thung's experiment
+df$TW_1_1_1 <- (df$TW_1_1_1 - 14.00) / 0.69
 
 # Convert RN_1_1_1 to accurate values by dividing by the sensor sensitivity
 # value of 13.6 uV/W m-2 but only for data before 2015-12-02 10:30:00
@@ -204,12 +204,12 @@ for (i in 1:nrow(df)){
 df$TS_2_1_1[which(ts2 > ts2_mean + (level * ts2_sd))] <- NA 
 rm(i,j,level,temp_mean2,temp_sd2,ts2,ts2_mean,ts2_sd)
 
-#### Filter TW_0_0_1 values ####
-# Create temporary TW_0_0_1 value
-tw <- df$TW_0_0_1
-# Standard dev of TW_0_0_1
+#### Filter TW_1_1_1 values ####
+# Create temporary TW_1_1_1 value
+tw <- df$TW_1_1_1
+# Standard dev of TW_1_1_1
 tw2_sd <- numeric(nrow(df))
-# Mean of TW_0_0_1
+# Mean of TW_1_1_1
 tw2_mean <- numeric(nrow(df))
 # Level of standard deviation
 level <- 20  # Just a very low bandwith filter to ensure that outside water
@@ -219,8 +219,8 @@ level <- 20  # Just a very low bandwith filter to ensure that outside water
 j <- 1
 for (i in 1:nrow(df)){
   if(df$day[i] == j){
-    tw2_sd[i] <- sd(df$TW_0_0_1[which(df$day==j)], na.rm = TRUE)
-    tw2_mean[i] <- mean(df$TW_0_0_1[which(df$day==j)], na.rm = TRUE)
+    tw2_sd[i] <- sd(df$TW_1_1_1[which(df$day==j)], na.rm = TRUE)
+    tw2_mean[i] <- mean(df$TW_1_1_1[which(df$day==j)], na.rm = TRUE)
     temp_sd2 <- tw2_sd[i]
     temp_mean2 <- tw2_mean[i]
     j <- j + 1
@@ -230,7 +230,7 @@ for (i in 1:nrow(df)){
   }
 }
 # Remove all above water temperature readings by X level std. dev.
-df$TW_0_0_1[which(tw > tw2_mean + (level * tw2_sd))] <- NA 
+df$TW_1_1_1[which(tw > tw2_mean + (level * tw2_sd))] <- NA 
 rm(i,j,level,temp_mean2,temp_sd2,tw,tw2_mean,tw2_sd)
 
 #### Filter RH_1_1_1 ambient RH ####
@@ -239,7 +239,7 @@ df$RH_1_1_1[which(df$RH_1_1_1 > 100 | df$RH_1_1_1 < 50)] <- NA
 
 # Create temporary RH_1_1_1 value
 RH <- df$RH_1_1_1
-# Standard dev of TW_0_0_1
+# Standard dev of RH_1_1_1
 RH2_sd <- numeric(nrow(df))
 # Mean of RH_1_1_1
 RH2_mean <- numeric(nrow(df))
@@ -317,8 +317,8 @@ rm(rho,c_p)
 # Level 1, 0.0001 m, water surface temperature
 #rho_cp_dT1 <- numeric()
 #for (i in 1:nrow(df)){
-#  rho_cp_dT1[i] <- ((rho_cp*df$TW_0_0_1[i]) - 
-#                      (rho_cp*df$TW_0_0_1[i-1]))/(30 * 60)
+#  rho_cp_dT1[i] <- ((rho_cp*df$TW_1_1_1[i]) - 
+#                      (rho_cp*df$TW_1_1_1[i-1]))/(30 * 60)
 #}
 
 # Level 2, 2 m
