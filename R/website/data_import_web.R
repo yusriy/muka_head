@@ -106,8 +106,8 @@ df_web$TA_1_1_1[which(df_web$TA_1_1_1 < 0 | df_web$TA_1_1_1 > 100 )] <- NA
 df_web$TS_1_1_1[which(df_web$TS_1_1_1 < 0 )] <- NA
 df_web$TS_2_1_1[which(df_web$TS_2_1_1 < 0 )] <- NA
 
-# Correct TW_1_1_1 values using calibration equation from Mei Thung's experiment
-df_web$TW_1_1_1 <- (df_web$TW_1_1_1 - 14.00) / 0.69
+# Correct TW_0_0_1 values using calibration equation from Mei Thung's experiment
+df_web$TW_0_0_1 <- (df_web$TW_0_0_1 - 14.00) / 0.69
 
 # Change column name of (z-d)/L to Z.L
 colnames(df_web)[which(colnames(df_web) == 'X.z.d..L')] <- 'Z.L'
@@ -157,7 +157,7 @@ ts_sd <- numeric(nrow(df_web))
 # Mean of TS_1_1_1
 ts_mean <- numeric(nrow(df_web))
 # Level of standard deviation
-level <- 0.5  # Just a very low bandwith filter to ensure that outside water
+level <- 10  # Just a very low bandwith filter to ensure that outside water
               # is removed
 ## Calculate standard deviation of T
 # To count number of days
@@ -186,7 +186,7 @@ ts2_sd <- numeric(nrow(df_web))
 # Mean of TS_2_1_1
 ts2_mean <- numeric(nrow(df_web))
 # Level of standard deviation
-level <- 0.5  # Just a very low bandwith filter to ensure that outside water
+level <- 10  # Just a very low bandwith filter to ensure that outside water
 # is removed
 ## Calculate standard deviation of T
 # To count number of days
@@ -207,12 +207,12 @@ for (i in 1:nrow(df_web)){
 df_web$TS_2_1_1[which(ts2 > ts2_mean + (level * ts2_sd))] <- NA 
 rm(i,j,level,temp_mean2,temp_sd2,ts2,ts2_mean,ts2_sd)
 
-#### Filter TW_1_1_1 values ####
-# Create temporary TW_1_1_1 value
-tw <- df_web$TW_1_1_1
-# Standard dev of TW_1_1_1
+#### Filter TW_0_0_1 values ####
+# Create temporary TW_0_0_1 value
+tw <- df_web$TW_0_0_1
+# Standard dev of TW_0_0_1
 tw2_sd <- numeric(nrow(df_web))
-# Mean of TW_1_1_1
+# Mean of TW_0_0_1
 tw2_mean <- numeric(nrow(df_web))
 # Level of standard deviation
 level <- 20  # Just a very low bandwith filter to ensure that outside water
@@ -222,8 +222,8 @@ level <- 20  # Just a very low bandwith filter to ensure that outside water
 j <- 1
 for (i in 1:nrow(df_web)){
   if(df_web$day[i] == j){
-    tw2_sd[i] <- sd(df_web$TW_1_1_1[which(df_web$day==j)], na.rm = TRUE)
-    tw2_mean[i] <- mean(df_web$TW_1_1_1[which(df_web$day==j)], na.rm = TRUE)
+    tw2_sd[i] <- sd(df_web$TW_0_0_1[which(df_web$day==j)], na.rm = TRUE)
+    tw2_mean[i] <- mean(df_web$TW_0_0_1[which(df_web$day==j)], na.rm = TRUE)
     temp_sd2 <- tw2_sd[i]
     temp_mean2 <- tw2_mean[i]
     j <- j + 1
@@ -233,7 +233,7 @@ for (i in 1:nrow(df_web)){
   }
 }
 # Remove all above water temperature readings by X level std. dev.
-df_web$TW_1_1_1[which(tw > tw2_mean + (level * tw2_sd))] <- NA 
+df_web$TW_0_0_1[which(tw > tw2_mean + (level * tw2_sd))] <- NA 
 rm(i,j,level,temp_mean2,temp_sd2,tw,tw2_mean,tw2_sd)
 
 #### Filter RH_1_1_1 ambient RH ####
@@ -247,7 +247,7 @@ RH2_sd <- numeric(nrow(df_web))
 # Mean of RH_1_1_1
 RH2_mean <- numeric(nrow(df_web))
 # Level of standard deviation
-level <- 10  # Just a very low bandwith filter to ensure that outside water
+level <- 100  # Just a very low bandwith filter to ensure that outside water
 # is removed
 ## Calculate standard deviation of T
 # To count number of days
@@ -277,7 +277,7 @@ TA2_sd <- numeric(nrow(df_web))
 # Mean of RH_1_1_1
 TA2_mean <- numeric(nrow(df_web))
 # Level of standard deviation
-level <- 1  # Just a very low bandwith filter to ensure that outside water
+level <- 10  # Just a very low bandwith filter to ensure that outside water
 # is removed
 ## Calculate standard deviation of T
 # To count number of days
