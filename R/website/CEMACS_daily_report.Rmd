@@ -68,7 +68,7 @@ mtext(side = 2, expression(paste('WS ', '(m ', 's'^'-1',')')),
       line = 2)
 ```
 
-## Wind Direction (WS)
+## Wind Direction (WD)
 Wind direction for 24 hours. Zero degrees is North and moving clockwise, 90 degrees is east.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
