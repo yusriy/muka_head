@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Date: `r Sys.Date()`
 
 This page shows the previous day half-hourly 24-hour measurements of carbon dioxide flux, latent and sensible heat fluxes and other weather parameters from the CEMACS eddy covariance station. Data is from 18:00 to 17:30, the following day.
+Coordinates: (5.49 N, 100.2025 E)
 
 
 ```{r , echo = FALSE, include = FALSE}
@@ -36,6 +37,68 @@ mtext(side = 2, expression(paste('CO'['2'],' flux (', mu,'g m'^'-2', ' s'^'-1','
       line = 2)
 ```
 
+## CO~2~ footprint
+Location of sources CO~2~ flux (90% contribution) using footprint analysis. Note that 'wind_strict_check' is off so sources could be from non-oceanic sources. Values in legend is in ug m[-2] s[-1].
+
+```{r , echo=FALSE, warning=FALSE, message=FALSE}
+require(plotrix)
+require(colorspace)
+require(marmap)
+# Usable CO2 index
+# Another index for co2 for -5 < co2 < 5
+indexCO2_5 <- (df_web$qc_co2_flux==1 | df_web$qc_co2_flux == 0) & df_web$co2_flux > -5 & df_web$co2_flux < 5
+# Data management
+x_90_polar <- df_web$x_90.[indexCO2_5]/1000
+indexNA <- which(is.na(x_90_polar))
+# Direction in degrees
+wd_polar <- df_web$wind_dir[indexCO2_5]
+wd_polar[indexNA] <- NA
+# co2 flux
+co2_polar <- df_web$co2_flux[indexCO2_5]
+co2_polar[indexNA] <- NA
+# Remove NA's
+x_90_polar <- na.omit(x_90_polar)
+wd_polar <- na.omit(wd_polar)
+wd_polar_rad <- wd_polar * 2 * pi /360
+co2_polar <- na.omit(co2_polar)
+
+# Color code the points
+ii <- cut(co2_polar, breaks = seq(min(co2_polar), max(co2_polar), by = 1))
+colors <- colorRampPalette(c("lightgreen", "darkorange"), alpha = 0.2)(7)[ii]
+# Change polar to long lat coordinates
+x <- ((x_90_polar*1000/110815) * sin(wd_polar_rad)) + 100.2025
+y <- ((x_90_polar*1000/110584) * cos(wd_polar_rad)) + 5.49
+
+# Color palette
+blues <- c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1")
+
+# Download bathymetry? might take a few seconds
+bath_ppinang <- getNOAA.bathy(lon1 = 99, lon2 = 105, lat1 = 1, lat2 = 6, resolution = 1)
+
+# plot the bathymetry
+plot(bath_ppinang, image = TRUE, land = TRUE, lwd = 0.1, 
+     xlim = c(100.20, 100.25), ylim = c(5.42, 5.62), 
+     cex.lab = 1, cex.axis = 0.8,
+     bpal = list(c(0, max(bath_ppinang), 'grey'), c(min(bath_ppinang), 0, blues)),
+     xlab = '', ylab = '')
+mtext(side = 1, 'Longitude', line = 2)
+mtext(side = 2, 'Latitude', line = 2)
+points(100.2025, 5.4750, pch = 19, col = 'red', cex = 1)
+scaleBathy(bath_ppinang, deg = 0.045, x = 'bottomright', inset = 5, cex = 0.8)
+points(x, y, pch = 19, col = colors, cex = 2)
+
+legend('topleft', 
+       legend = c('[-4,-3)', 
+                  '[-3,-2)',
+                  '[-2,-1)',
+                  '[-1,0)',
+                  '(0,1]',
+                  '(1,2]',
+                  '(2,3]'),
+       pch = c(19,19,19,19,19,19,19),
+       col = c(levels(as.factor(colors))), cex = 1)
+
+```
 
 ## Latent heat (LE)
 This plots shows the vertical movement of moisture or latent heat (LE) from the water and land surfaces surrounding the station.
