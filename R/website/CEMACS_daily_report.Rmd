@@ -19,15 +19,18 @@ This page shows the previous day half-hourly 24-hour measurements of carbon diox
 
 ```{r , echo = FALSE, include = FALSE}
 source('data_import_web.R') # Using a modified version of data_import.R
+require(openair) # To plot wind rose
 ```
 
 
-## Carbon dioxide flux (CO~2~ flux)
+## CO~2~ flux
 This plots shows the vertical movement or fluxes of carbon dioxide (CO~2~) from the water and land surfaces surrounding the station.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
 plot(df_web$time_stamp, df_web$co2_flux, type ='o', pch = 19, xlab = '',
      ylab = '', col = 'orange', ylim = c(-0.5,0.5))
+points(df_web$time_stamp[which(df_web$qc_co2_flux == '2')], 
+       df_web$co2_flux[which(df_web$qc_co2_flux == '2')], pch = 19, col = 'red')
 mtext(side = 1, 'Time', line = 2)
 mtext(side = 2, expression(paste('CO'['2'],' flux (', mu,'g m'^'-2', ' s'^'-1',')')), 
       line = 2)
@@ -40,6 +43,8 @@ This plots shows the vertical movement of moisture or latent heat (LE) from the 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
 plot(df_web$time_stamp, df_web$LE, type ='o', pch = 19, xlab = '',
      ylab = '', col = 'blue')
+points(df_web$time_stamp[which(df_web$qc_LE == '2')], 
+       df_web$LE[which(df_web$qc_LE == '2')], pch = 19, col = 'red')
 mtext(side = 1, 'Time', line = 2)
 mtext(side = 2, expression(paste('LE ', '(W m'^'-2',')')), 
       line = 2)
@@ -52,8 +57,22 @@ This plots shows the vertical movement or fluxes of dry heat or sensible heat (H
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
 plot(df_web$time_stamp, df_web$H, type ='o', pch = 19, xlab = '',
      ylab = '', col = 'red')
+points(df_web$time_stamp[which(df_web$qc_H == '2')], 
+       df_web$H[which(df_web$qc_H == '2')], pch = 19, col = 'blue')
 mtext(side = 1, 'Time', line = 2)
 mtext(side = 2, expression(paste('H ', '(W m'^'-2',')')), 
+      line = 2)
+```
+
+## Global and net radiation 
+Global radiation (RG) is red and net radiation (RN) is orange.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$RG_1_1_1, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'red',ylim=c(-200,1000))
+lines(df_web$time_stamp, df_web$RN_1_1_1, type = 'o', pch = 19, col = 'orange')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('RG and RN ', '(W m'^'-2',')')), 
       line = 2)
 ```
 
@@ -69,7 +88,7 @@ mtext(side = 2, expression(paste('WS ', '(m ', 's'^'-1',')')),
 ```
 
 ## Wind Direction (WD)
-Wind direction for 24 hours. Zero degrees is North and moving clockwise, 90 degrees is east.
+Wind direction for 24 hours. Zero degrees is North and, moving clockwise, 90 degrees is east.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
 plot(df_web$time_stamp, df_web$wind_dir, type ='o', pch = 19, xlab = '',
@@ -79,6 +98,13 @@ mtext(side = 2, expression(paste('WD ', '(', degree, ')')),
       line = 2)
 ```
 
+## Wind rose
+Wind rose for 24 hours. Zero degrees is North and, moving clockwise, 90 degrees is east.
+
+```{r , echo=FALSE, warning=FALSE, message=FALSE}
+windRose(df_web, ws = 'wind_speed', wd = 'wind_dir', paddle = FALSE)
+
+```
 
 ## Atmospheric temperature (T)
 Atmospheric temperature for 24 hours.
@@ -111,17 +137,5 @@ plot(df_web$time_stamp, df_web$TS_1_1_1, type ='o', pch = 19, xlab = '',
 #lines(df_web$time_stamp, df_web$TS_2_1_1, col = 'lightblue',type ='o', pch =19)
 mtext(side = 1, 'Time', line = 2)
 mtext(side = 2, expression(paste('T (', degree,'C)')), 
-      line = 2)
-```
-
-## Global and net radiation 
-Global radiation (RG) is red and net radiation (RN) is orange.
-
-```{r , echo=FALSE, warning = FALSE, message = FALSE}
-plot(df_web$time_stamp, df_web$RG_1_1_1, type ='o', pch = 19, xlab = '',
-     ylab = '', col = 'red',ylim=c(-200,1000))
-lines(df_web$time_stamp, df_web$RN_1_1_1, type = 'o', pch = 19, col = 'orange')
-mtext(side = 1, 'Time', line = 2)
-mtext(side = 2, expression(paste('RG and RN ', '(W m'^'-2',')')), 
       line = 2)
 ```
