@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Air-sea flux exchanges and weather
 Date: `r Sys.Date()`
 
-This page shows the previous day half-hourly 24-hour measurements of carbon dioxide flux, latent and sensible heat fluxes and other weather parameters from the CEMACS eddy covariance station. Data is from 18:00 to 17:30, the following day.
+This page shows the previous day half-hourly 24-hour measurements of carbon dioxide flux, latent and sensible heat fluxes and other weather parameters from the CEMACS eddy covariance station. Data is from the previous day.
 Coordinates: (5.49 N, 100.2025 E)
 
 
@@ -28,7 +28,7 @@ require(openair) # To plot wind rose
 This plots shows the vertical movement or fluxes of carbon dioxide (CO~2~) from the water and land surfaces surrounding the station.
 
 ```{r , echo=FALSE, warning = FALSE, message = FALSE}
-plot(df_web$time_stamp, df_web$co2_flux, type ='o', pch = 19, xlab = '',
+plot(df_web$time_stamp, df_web$co2_flux, pch = 19, xlab = '',
      ylab = '', col = 'orange', ylim = c(-0.5,0.5))
 points(df_web$time_stamp[which(df_web$qc_co2_flux == '2')], 
        df_web$co2_flux[which(df_web$qc_co2_flux == '2')], pch = 19, col = 'red')
@@ -63,8 +63,13 @@ wd_polar_rad <- wd_polar * 2 * pi /360
 co2_polar <- na.omit(co2_polar)
 
 # Color code the points
-ii <- cut(co2_polar, breaks = seq(min(co2_polar), max(co2_polar), by = 1))
-colors <- colorRampPalette(c("lightgreen", "darkorange"), alpha = 0.2)(7)[ii]
+ii <- cut(co2_polar, breaks = seq(min(co2_polar), max(co2_polar), 
+                                  by = round((max(co2_polar) - min(co2_polar))/5,2)))
+ii <- na.omit(ii)
+colorfunc <- colorRampPalette(c("yellow", "green"), alpha = 0.8)(length(ii))
+
+
+
 # Change polar to long lat coordinates
 x <- ((x_90_polar*1000/110815) * sin(wd_polar_rad)) + 100.2025
 y <- ((x_90_polar*1000/110584) * cos(wd_polar_rad)) + 5.49
@@ -76,6 +81,8 @@ blues <- c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelb
 bath_ppinang <- getNOAA.bathy(lon1 = 99, lon2 = 105, lat1 = 1, lat2 = 6, resolution = 1)
 
 # plot the bathymetry
+layout(matrix(1:2, ncol = 2), width = c(2,1), height = c(1,1))
+
 plot(bath_ppinang, image = TRUE, land = TRUE, lwd = 0.1, 
      xlim = c(100.20, 100.25), ylim = c(5.42, 5.62), 
      cex.lab = 1, cex.axis = 0.8,
@@ -83,20 +90,50 @@ plot(bath_ppinang, image = TRUE, land = TRUE, lwd = 0.1,
      xlab = '', ylab = '')
 mtext(side = 1, 'Longitude', line = 2)
 mtext(side = 2, 'Latitude', line = 2)
-points(100.2025, 5.4750, pch = 19, col = 'red', cex = 1)
+points(100.2025, 5.4750, pch = 19, col = 'black', cex = 1)
 scaleBathy(bath_ppinang, deg = 0.045, x = 'bottomright', inset = 5, cex = 0.8)
-points(x, y, pch = 19, col = colors, cex = 2)
+points(x, y, pch = 19, col = colorfunc, cex = 2)
 
-legend('topleft', 
-       legend = c('[-4,-3)', 
-                  '[-3,-2)',
-                  '[-2,-1)',
-                  '[-1,0)',
-                  '(0,1]',
-                  '(1,2]',
-                  '(2,3]'),
-       pch = c(19,19,19,19,19,19,19),
-       col = c(levels(as.factor(colors))), cex = 1)
+legend_image <- grDevices::as.raster(matrix(colorfunc, ncol = 1))
+plot(c(0,2),c(min(co2_polar), max(co2_polar)), 
+     type = 'n', axes = FALSE, xlab = '', ylab = '', main = 'Flux')
+text(x = 1, y = seq(min(co2_polar), max(co2_polar), l = 3),
+     labels = c(round(min(co2_polar),3), 
+                round(median(co2_polar),3), 
+                round(max(co2_polar), 3)))
+rasterImage(legend_image, 0, min(co2_polar), 0.4, max(co2_polar))
+
+# Color code the points
+#ii <- cut(co2_polar, breaks = seq(min(co2_polar), max(co2_polar), 
+#                                  by = round((max(co2_polar) - min(co2_polar))/6,2)))
+#colors <- colorRampPalette(c("yellow", "red"), alpha = 0.8)(length(ii))[ii]
+# Change polar to long lat coordinates
+#x <- ((x_90_polar*1000/110815) * sin(wd_polar_rad)) + 100.2025
+#y <- ((x_90_polar*1000/110584) * cos(wd_polar_rad)) + 5.49
+
+# Color palette
+#blues <- c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1")
+
+# Download bathymetry? might take a few seconds
+#bath_ppinang <- getNOAA.bathy(lon1 = 99, lon2 = 105, lat1 = 1, lat2 = 6, resolution = 1)
+
+# plot the bathymetry
+#plot(bath_ppinang, image = TRUE, land = TRUE, lwd = 0.1, 
+#     xlim = c(100.20, 100.25), ylim = c(5.42, 5.62), 
+#     cex.lab = 1, cex.axis = 0.8,
+#     bpal = list(c(0, max(bath_ppinang), 'grey'), c(min(bath_ppinang), 0, blues)),
+#     xlab = '', ylab = '')
+#mtext(side = 1, 'Longitude', line = 2)
+#mtext(side = 2, 'Latitude', line = 2)
+#points(100.2025, 5.4750, pch = 19, col = 'black', cex = 1)
+#scaleBathy(bath_ppinang, deg = 0.045, x = 'bottomright', inset = 5, cex = 0.8)
+#points(x, y, pch = 19, col = colors, cex = 2)
+
+#legend_number <- sort(levels(ii), decreasing = TRUE)
+#legend('topleft', 
+#       legend = c(legend_number[1], legend_number[3], legend_number[4], legend_number[6]),
+#       pch = rep(19,length(levels(as.factor(colors)))),
+#       col = c(levels(as.factor(colors))), cex = 1)
 
 ```
 
