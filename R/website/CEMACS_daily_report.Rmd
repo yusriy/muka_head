@@ -78,7 +78,8 @@ y <- ((x_90_polar*1000/110584) * cos(wd_polar_rad)) + 5.49
 blues <- c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1")
 
 # Download bathymetry? might take a few seconds
-bath_ppinang <- getNOAA.bathy(lon1 = 99, lon2 = 105, lat1 = 1, lat2 = 6, resolution = 1)
+#bath_ppinang <- getNOAA.bathy(lon1 = 99, lon2 = 105, lat1 = 1, lat2 = 6, resolution = 1)
+load(file='/home/eddy_cov/Documents/muka_head/bath_ppinang.RData')
 
 # plot the bathymetry
 layout(matrix(1:2, ncol = 2), width = c(2,1), height = c(1,1))
@@ -103,37 +104,6 @@ text(x = 1, y = seq(min(co2_polar), max(co2_polar), l = 3),
                 round(max(co2_polar), 3)))
 rasterImage(legend_image, 0, min(co2_polar), 0.4, max(co2_polar))
 
-# Color code the points
-#ii <- cut(co2_polar, breaks = seq(min(co2_polar), max(co2_polar), 
-#                                  by = round((max(co2_polar) - min(co2_polar))/6,2)))
-#colors <- colorRampPalette(c("yellow", "red"), alpha = 0.8)(length(ii))[ii]
-# Change polar to long lat coordinates
-#x <- ((x_90_polar*1000/110815) * sin(wd_polar_rad)) + 100.2025
-#y <- ((x_90_polar*1000/110584) * cos(wd_polar_rad)) + 5.49
-
-# Color palette
-#blues <- c("lightsteelblue4", "lightsteelblue3", "lightsteelblue2", "lightsteelblue1")
-
-# Download bathymetry? might take a few seconds
-#bath_ppinang <- getNOAA.bathy(lon1 = 99, lon2 = 105, lat1 = 1, lat2 = 6, resolution = 1)
-
-# plot the bathymetry
-#plot(bath_ppinang, image = TRUE, land = TRUE, lwd = 0.1, 
-#     xlim = c(100.20, 100.25), ylim = c(5.42, 5.62), 
-#     cex.lab = 1, cex.axis = 0.8,
-#     bpal = list(c(0, max(bath_ppinang), 'grey'), c(min(bath_ppinang), 0, blues)),
-#     xlab = '', ylab = '')
-#mtext(side = 1, 'Longitude', line = 2)
-#mtext(side = 2, 'Latitude', line = 2)
-#points(100.2025, 5.4750, pch = 19, col = 'black', cex = 1)
-#scaleBathy(bath_ppinang, deg = 0.045, x = 'bottomright', inset = 5, cex = 0.8)
-#points(x, y, pch = 19, col = colors, cex = 2)
-
-#legend_number <- sort(levels(ii), decreasing = TRUE)
-#legend('topleft', 
-#       legend = c(legend_number[1], legend_number[3], legend_number[4], legend_number[6]),
-#       pch = rep(19,length(levels(as.factor(colors)))),
-#       col = c(levels(as.factor(colors))), cex = 1)
 
 ```
 
@@ -237,5 +207,17 @@ plot(df_web$time_stamp, df_web$TS_1_1_1, type ='o', pch = 19, xlab = '',
 #lines(df_web$time_stamp, df_web$TS_2_1_1, col = 'lightblue',type ='o', pch =19)
 mtext(side = 1, 'Time', line = 2)
 mtext(side = 2, expression(paste('T (', degree,'C)')), 
+      line = 2)
+```
+
+
+## Rain
+The 30-min accumulative rain or precipitation (Precip) in mm.
+
+```{r , echo=FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$precip_1_1_1, type ='o', pch = 19, xlab = '',
+     ylab = '', col = 'darkblue')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('30-min Cumulative Rain (mm)')), 
       line = 2)
 ```

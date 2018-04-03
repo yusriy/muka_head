@@ -14,8 +14,11 @@
 # 1. For data before 2015-12-02 10:30:00, all RN_1_1_1 should be
 # divided by 13.6, corrections were made for data after this date.
 # 2. Before the infrared sensor was TW_1_1_1, now it is TW_0_0_1
-# since analysis 2017-05-21
+# since analysis 2017-05-21.
 # 3. Changed from TW_0_0_1 back to TW_1_1_1 since 2017-06-17
+# 4. Removed TS_2_1_1 and TW_1_1_1 and added precip_1_1_1 on 2018-04-03.
+#
+# 
 
 #### 1. Preliminaries #########################################
 source('/home/eddy_cov/Documents/muka_head/R/tools/tool_convert_magic.R')
@@ -99,15 +102,15 @@ df_web <- charactersNumeric(df_web)
 # Convert TA_1_1_1, TS_1_1_1, and TS_2_1_1 from K to C
 df_web$TA_1_1_1 <- df_web$TA_1_1_1 - 273.15
 df_web$TS_1_1_1 <- df_web$TS_1_1_1 - 273.15
-df_web$TS_2_1_1 <- df_web$TS_2_1_1 - 273.15
+#df_web$TS_2_1_1 <- df_web$TS_2_1_1 - 273.15
 
 # Remove all improbable values of T
 df_web$TA_1_1_1[which(df_web$TA_1_1_1 < 0 | df_web$TA_1_1_1 > 100 )] <- NA
 df_web$TS_1_1_1[which(df_web$TS_1_1_1 < 0 )] <- NA
-df_web$TS_2_1_1[which(df_web$TS_2_1_1 < 0 )] <- NA
+#df_web$TS_2_1_1[which(df_web$TS_2_1_1 < 0 )] <- NA
 
 # Correct TW_0_0_1 values using calibration equation from Mei Thung's experiment
-df_web$TW_0_0_1 <- (df_web$TW_0_0_1 - 14.00) / 0.69
+#df_web$TW_0_0_1 <- (df_web$TW_0_0_1 - 14.00) / 0.69
 
 # Change column name of (z-d)/L to Z.L
 colnames(df_web)[which(colnames(df_web) == 'X.z.d..L')] <- 'Z.L'
@@ -178,63 +181,63 @@ for (i in 1:nrow(df_web)){
 df_web$TS_1_1_1[which(ts < ts_mean - (level * ts_sd))] <- NA 
 rm(i,j,level,temp_mean,temp_sd,ts,ts_mean,ts_sd)
 
-#### Filter TS_2_1_1 values ####
-# Create temporary TS_2_1_1 value
-ts2 <- df_web$TS_2_1_1
-# Standard dev of TS_2_1_1
-ts2_sd <- numeric(nrow(df_web))
-# Mean of TS_2_1_1
-ts2_mean <- numeric(nrow(df_web))
-# Level of standard deviation
-level <- 10  # Just a very low bandwith filter to ensure that outside water
-# is removed
-## Calculate standard deviation of T
-# To count number of days
-j <- 1
-for (i in 1:nrow(df_web)){
-  if(df_web$day[i] == j){
-    ts2_sd[i] <- sd(df_web$TS_2_1_1[which(df_web$day==j)], na.rm = TRUE)
-    ts2_mean[i] <- mean(df_web$TS_2_1_1[which(df_web$day==j)], na.rm = TRUE)
-    temp_sd2 <- ts2_sd[i]
-    temp_mean2 <- ts2_mean[i]
-    j <- j + 1
-  } else {
-    ts2_sd[i] <- temp_sd2
-    ts2_mean[i] <- temp_mean2
-  }
-}
-# Remove all above water temperature readings by X level std. dev.
-df_web$TS_2_1_1[which(ts2 > ts2_mean + (level * ts2_sd))] <- NA 
-rm(i,j,level,temp_mean2,temp_sd2,ts2,ts2_mean,ts2_sd)
-
-#### Filter TW_0_0_1 values ####
-# Create temporary TW_0_0_1 value
-tw <- df_web$TW_0_0_1
-# Standard dev of TW_0_0_1
-tw2_sd <- numeric(nrow(df_web))
-# Mean of TW_0_0_1
-tw2_mean <- numeric(nrow(df_web))
-# Level of standard deviation
-level <- 20  # Just a very low bandwith filter to ensure that outside water
-# is removed
-## Calculate standard deviation of T
-# To count number of days
-j <- 1
-for (i in 1:nrow(df_web)){
-  if(df_web$day[i] == j){
-    tw2_sd[i] <- sd(df_web$TW_0_0_1[which(df_web$day==j)], na.rm = TRUE)
-    tw2_mean[i] <- mean(df_web$TW_0_0_1[which(df_web$day==j)], na.rm = TRUE)
-    temp_sd2 <- tw2_sd[i]
-    temp_mean2 <- tw2_mean[i]
-    j <- j + 1
-  } else {
-    tw2_sd[i] <- temp_sd2
-    tw2_mean[i] <- temp_mean2
-  }
-}
-# Remove all above water temperature readings by X level std. dev.
-df_web$TW_0_0_1[which(tw > tw2_mean + (level * tw2_sd))] <- NA 
-rm(i,j,level,temp_mean2,temp_sd2,tw,tw2_mean,tw2_sd)
+# #### Filter TS_2_1_1 values ####
+# # Create temporary TS_2_1_1 value
+# ts2 <- df_web$TS_2_1_1
+# # Standard dev of TS_2_1_1
+# ts2_sd <- numeric(nrow(df_web))
+# # Mean of TS_2_1_1
+# ts2_mean <- numeric(nrow(df_web))
+# # Level of standard deviation
+# level <- 10  # Just a very low bandwith filter to ensure that outside water
+# # is removed
+# ## Calculate standard deviation of T
+# # To count number of days
+# j <- 1
+# for (i in 1:nrow(df_web)){
+#   if(df_web$day[i] == j){
+#     ts2_sd[i] <- sd(df_web$TS_2_1_1[which(df_web$day==j)], na.rm = TRUE)
+#     ts2_mean[i] <- mean(df_web$TS_2_1_1[which(df_web$day==j)], na.rm = TRUE)
+#     temp_sd2 <- ts2_sd[i]
+#     temp_mean2 <- ts2_mean[i]
+#     j <- j + 1
+#   } else {
+#     ts2_sd[i] <- temp_sd2
+#     ts2_mean[i] <- temp_mean2
+#   }
+# }
+# # Remove all above water temperature readings by X level std. dev.
+# df_web$TS_2_1_1[which(ts2 > ts2_mean + (level * ts2_sd))] <- NA 
+# rm(i,j,level,temp_mean2,temp_sd2,ts2,ts2_mean,ts2_sd)
+# 
+# #### Filter TW_0_0_1 values ####
+# # Create temporary TW_0_0_1 value
+# tw <- df_web$TW_0_0_1
+# # Standard dev of TW_0_0_1
+# tw2_sd <- numeric(nrow(df_web))
+# # Mean of TW_0_0_1
+# tw2_mean <- numeric(nrow(df_web))
+# # Level of standard deviation
+# level <- 20  # Just a very low bandwith filter to ensure that outside water
+# # is removed
+# ## Calculate standard deviation of T
+# # To count number of days
+# j <- 1
+# for (i in 1:nrow(df_web)){
+#   if(df_web$day[i] == j){
+#     tw2_sd[i] <- sd(df_web$TW_0_0_1[which(df_web$day==j)], na.rm = TRUE)
+#     tw2_mean[i] <- mean(df_web$TW_0_0_1[which(df_web$day==j)], na.rm = TRUE)
+#     temp_sd2 <- tw2_sd[i]
+#     temp_mean2 <- tw2_mean[i]
+#     j <- j + 1
+#   } else {
+#     tw2_sd[i] <- temp_sd2
+#     tw2_mean[i] <- temp_mean2
+#   }
+# }
+# # Remove all above water temperature readings by X level std. dev.
+# df_web$TW_0_0_1[which(tw > tw2_mean + (level * tw2_sd))] <- NA 
+# rm(i,j,level,temp_mean2,temp_sd2,tw,tw2_mean,tw2_sd)
 
 #### Filter RH_1_1_1 ambient RH ####
 # Improbable values of RH
@@ -301,73 +304,73 @@ rm(i,j,level,temp_mean2,temp_sd2,TA,TA2_mean,TA2_sd)
 #### Filter RN_1_1_1 ####
 df_web$RN_1_1_1[which(df_web$RN_1_1_1 > 1000)] <- NA
 
-#### Calculate energy storage in water ####
-# Only 3 heights including the water surface temperature
-# These are estimated heights
-# Level 1: water surface = 0.0001 m 
-# Level 2: 2 m 
-# Level 3: 3 m
-heights <- c(1,2) 
-# Calculating rho * cp for each level
-rho <- 1025 # Density of sea water = 1020 to 1029 kg m-3
-c_p <- 3850 # Specific heat capacity of sea water = 3850 J kg-1 C-1
-rho_cp <- rho * c_p
-rm(rho,c_p)
-
-# Level 2, 2 m
-rho_cp_dT2 <- numeric()
-for (i in 1:nrow(df_web)){
-  rho_cp_dT2[i] <- ((rho_cp*df_web$TS_1_1_1[i]) - 
-                      (rho_cp*df_web$TS_1_1_1[i-1]))/(30 * 60)
-}
-
-# Level 3, 5 m
-rho_cp_dT3 <- numeric()
-for (i in 1:nrow(df_web)){
-  rho_cp_dT3[i] <- ((rho_cp*df_web$TS_2_1_1[i]) - 
-                      (rho_cp*df_web$TS_2_1_1[i-1]))/(30 * 60)
-}
-
-# Integrating using the trapezium area rule
-H_stor <- numeric()
-for (i in 1:nrow(df_web)){
-  H_stor[i] <- trapezium_intg_2(heights,rho_cp_dT2[i],rho_cp_dT3[i])
-}
-
-# Adding to df_EC
-df_web <- cbind(df_web,H_stor)
-rm(heights,i,rho_cp,rho_cp_dT2,rho_cp_dT3,H_stor)
-
-#### Filter H_stor values ####
-
-# Create temporary H_stor value
-H_stor_filter <- df_web$H_stor
-# Standard dev of H_stor
-hstor_sd <- numeric(nrow(df_web))
-# Mean of H_stor
-hstor_mean <- numeric(nrow(df_web))
-
-# Level of standard deviation
-level <- 20 # A large bandwidth to ensure most of the data is not removed
-
-## Calculate standard deviation of H_stor
-# To count number of days
-j <- 1
-for (i in 1:nrow(df_web)){
-  if(df_web$day[i] == j){
-    hstor_sd[i] <- sd(df_web$H_stor[which(df_web$day==j)], na.rm = TRUE)
-    hstor_mean[i] <- mean(df_web$H_stor[which(df_web$day==j)], na.rm = TRUE)
-    hstor1_sd <- hstor_sd[i]
-    hstor1_mean <- hstor_mean[i]
-    j <- j + 1
-  } else {
-    hstor_sd[i] <- hstor1_sd
-    hstor_mean[i] <- hstor1_mean
-  }
-}
-# Remove all above water temperature readings by X level std. dev.
-H_stor_filter[which(H_stor_filter < hstor_mean - (level * hstor_sd) | 
-                      H_stor_filter > hstor_mean + (level * hstor_sd))] <- NA
-df_web <- cbind(df_web,H_stor_filter)
-rm(i,j,level,hstor_mean,hstor_sd,H_stor_filter,hstor1_mean,hstor1_sd)
+# #### Calculate energy storage in water ####
+# # Only 3 heights including the water surface temperature
+# # These are estimated heights
+# # Level 1: water surface = 0.0001 m 
+# # Level 2: 2 m 
+# # Level 3: 3 m
+# heights <- c(1,2) 
+# # Calculating rho * cp for each level
+# rho <- 1025 # Density of sea water = 1020 to 1029 kg m-3
+# c_p <- 3850 # Specific heat capacity of sea water = 3850 J kg-1 C-1
+# rho_cp <- rho * c_p
+# rm(rho,c_p)
+# 
+# # Level 2, 2 m
+# rho_cp_dT2 <- numeric()
+# for (i in 1:nrow(df_web)){
+#   rho_cp_dT2[i] <- ((rho_cp*df_web$TS_1_1_1[i]) - 
+#                       (rho_cp*df_web$TS_1_1_1[i-1]))/(30 * 60)
+# }
+# 
+# # Level 3, 5 m
+# rho_cp_dT3 <- numeric()
+# for (i in 1:nrow(df_web)){
+#   rho_cp_dT3[i] <- ((rho_cp*df_web$TS_2_1_1[i]) - 
+#                       (rho_cp*df_web$TS_2_1_1[i-1]))/(30 * 60)
+# }
+# 
+# # Integrating using the trapezium area rule
+# H_stor <- numeric()
+# for (i in 1:nrow(df_web)){
+#   H_stor[i] <- trapezium_intg_2(heights,rho_cp_dT2[i],rho_cp_dT3[i])
+# }
+# 
+# # Adding to df_EC
+# df_web <- cbind(df_web,H_stor)
+# rm(heights,i,rho_cp,rho_cp_dT2,rho_cp_dT3,H_stor)
+# 
+# #### Filter H_stor values ####
+# 
+# # Create temporary H_stor value
+# H_stor_filter <- df_web$H_stor
+# # Standard dev of H_stor
+# hstor_sd <- numeric(nrow(df_web))
+# # Mean of H_stor
+# hstor_mean <- numeric(nrow(df_web))
+# 
+# # Level of standard deviation
+# level <- 20 # A large bandwidth to ensure most of the data is not removed
+# 
+# ## Calculate standard deviation of H_stor
+# # To count number of days
+# j <- 1
+# for (i in 1:nrow(df_web)){
+#   if(df_web$day[i] == j){
+#     hstor_sd[i] <- sd(df_web$H_stor[which(df_web$day==j)], na.rm = TRUE)
+#     hstor_mean[i] <- mean(df_web$H_stor[which(df_web$day==j)], na.rm = TRUE)
+#     hstor1_sd <- hstor_sd[i]
+#     hstor1_mean <- hstor_mean[i]
+#     j <- j + 1
+#   } else {
+#     hstor_sd[i] <- hstor1_sd
+#     hstor_mean[i] <- hstor1_mean
+#   }
+# }
+# # Remove all above water temperature readings by X level std. dev.
+# H_stor_filter[which(H_stor_filter < hstor_mean - (level * hstor_sd) | 
+#                       H_stor_filter > hstor_mean + (level * hstor_sd))] <- NA
+# df_web <- cbind(df_web,H_stor_filter)
+# rm(i,j,level,hstor_mean,hstor_sd,H_stor_filter,hstor1_mean,hstor1_sd)
 
