@@ -115,6 +115,9 @@ df_web$TS_1_1_1[which(df_web$TS_1_1_1 < 0 )] <- NA
 # Change column name of (z-d)/L to Z.L
 colnames(df_web)[which(colnames(df_web) == 'X.z.d..L')] <- 'Z.L'
 
+# Change all very low precip_1_1_1 values to 0
+df_web$precip_1_1_1[which(df_web$P_RAIN_1_1_1 < 0)] <- 0
+
 # Delete temporary variables
 rm(time_stamp,df_biomet_web)
 
