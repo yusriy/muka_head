@@ -36,6 +36,14 @@ path_ec <- Sys.glob(paste(path,'/eddypro_muka_head01_full_output_',
 path_biomet <- Sys.glob(paste(path,'/eddypro_muka_head01_biomet_',
                               date_ec,'T*.csv', sep =''))
 
+#If you would like to use a specific analysis for import
+
+# path_ec <- Sys.glob(paste(path,'/eddypro_muka_head01_full_output_',
+#                           date_ec,'T093609*.csv', sep =''))
+# path_biomet <- Sys.glob(paste(path,'/eddypro_muka_head01_biomet_',
+#                               date_ec,'T093609*.csv', sep =''))
+
+
 df_web <- read.csv(path_ec, skip=1)
 df_biomet_web <- read.csv(path_biomet)
 
@@ -116,7 +124,8 @@ df_web$TS_1_1_1[which(df_web$TS_1_1_1 < 0 )] <- NA
 colnames(df_web)[which(colnames(df_web) == 'X.z.d..L')] <- 'Z.L'
 
 # Change all very low precip_1_1_1 values to 0
-df_web$precip_1_1_1[which(df_web$P_RAIN_1_1_1 < 0)] <- 0
+df_web$P_RAIN_1_1_1[which(df_web$P_RAIN_1_1_1 < 0)] <- 0
+#df_web$UNNAMED_0_0_1[which(df_web$UNNAMED_0_0_1 < 0.01)] <- 0
 
 # Delete temporary variables
 rm(time_stamp,df_biomet_web)
