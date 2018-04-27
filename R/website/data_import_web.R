@@ -125,6 +125,8 @@ colnames(df_web)[which(colnames(df_web) == 'X.z.d..L')] <- 'Z.L'
 
 # Change all very low precip_1_1_1 values to 0
 df_web$P_RAIN_1_1_1[which(df_web$P_RAIN_1_1_1 < 0)] <- 0
+# Because the data could be in meters instead of millimeters
+df_web$P_RAIN_1_1_1 <- df_web$P_RAIN_1_1_1 * 1000
 #df_web$UNNAMED_0_0_1[which(df_web$UNNAMED_0_0_1 < 0.01)] <- 0
 
 # Delete temporary variables
