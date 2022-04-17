@@ -32,9 +32,9 @@ source('/home/eddy_cov/Documents/muka_head/R/tools/trapezium_intg_2.R')
 date_ec <- Sys.Date()
 path <- '/home/eddy_cov/Downloads/ec_data/results'
 path_ec <- Sys.glob(paste(path,'/eddypro_muka_head01_full_output_',
-                          date_ec,'T*.csv', sep =''))
+                          date_ec,'T000*.csv', sep =''))
 path_biomet <- Sys.glob(paste(path,'/eddypro_muka_head01_biomet_',
-                              date_ec,'T*.csv', sep =''))
+                              date_ec,'T0*.csv', sep =''))
 
 #If you would like to use a specific analysis for import
 

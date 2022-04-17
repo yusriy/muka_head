@@ -146,6 +146,16 @@ mtext(side = 2, expression(paste('RG and RN ', '(W m'^'-2',')')),
       line = 2)
 ```
 
+## Photosynthetic active radiation
+Photosynthetic active radiation (PAR)
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+plot(df_web$time_stamp, df_web$PPFD_1_1_1, type ='o', pch = 19, col = 'green',
+	xlab = '', ylab='')
+mtext(side = 1, 'Time', line = 2)
+mtext(side = 2, expression(paste('PPFD ', '(', mu, 'mol ', 'm'^'-2', ' s'^'-1',')')),
+	line = 2)
+```
+
 ## Wind Speed (WS)
 Wind speed for 24 hours.
 
